@@ -1,18 +1,37 @@
-CC = %compilador%\gcc
-IDIR = inc
-CFLAGS = -I$(IDIR)
-ODIR = obj
-SDIR = src
-TARGET = testa_soma_string_stdin
+CXX=g++
 
-DEPS = $(IDIR)\string_soma.hpp
+TARGET=t
+
+IDIR=inc
+
+CFLAGS=-I$(IDIR) -Wall
+
+ODIR=obj
+OBJS=$(ODIR)/testa_string_soma.o $(ODIR)/string_soma.o 
+
+DEPS=$(IDIR)/string_soma.hpp
+
+SDIR=src
+
+all : $(TARGET)
+
+$(ODIR)/%.o : $(SDIR)/%.cpp $(DEPS)
+	$(CXX) -c -o $@ $< $(CFLAGS)
+	
+$(TARGET) : $(OBJS) $(DEPS)
+	$(CXX) -o $@ $^ $(CFLAGS)
+
+.PHONY: clean
+
+clean:
+	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~
 
 
-OBJ =  obj\string_soma.o  obj\\testa_string_soma.o 
 
 
-obj\%.o: src\%.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
 
-$(TARGET): obj
-	gcc -o $@ $^ $(CFLAGS)
+	
+
+
+
+	
