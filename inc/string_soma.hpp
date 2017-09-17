@@ -17,6 +17,10 @@ using std::ifstream;
 using std::getline;
 using std::stringstream;
 using std::vector;
+using std::regex;
+using std::smatch;
+using std::regex_search;
+using std::stoi;
 
 typedef struct tt_calc {
   int resultado;
@@ -34,6 +38,9 @@ int calcula_resultado(t_calc &entrada);
 
 // descrição
 bool termina_com_barra_n(t_calc &entrada);
+
+/// busca e soma 
+void soma_numeros (t_calc &entrada);
 
 /// abre e armazena dados de entrada
 //void ler_entrada(char * string_entrada);
