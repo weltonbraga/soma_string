@@ -1,6 +1,8 @@
 CXX=g++
 
-TARGET=testa_soma_string_stdin
+EXENAME=testa_soma_string_stdin
+
+MYLIB=string_soma
 
 IDIR=inc
 
@@ -8,9 +10,9 @@ CFLAGS=-I$(IDIR) --coverage -g -Wall -ftest-coverage -fprofile-arcs
 
 ODIR=obj
 
-OBJS=$(ODIR)/testa_string_soma.o $(ODIR)/string_soma.o 
+OBJS=$(ODIR)/$(EXENAME).o $(ODIR)/$(MYLIB).o 
 
-DEPS=$(IDIR)/string_soma.hpp
+DEPS=$(IDIR)/$(MYLIB).hpp
 
 SDIR=src
 
@@ -18,28 +20,28 @@ TFLAGS= -lgtest -lgtest_main -pthread -I$(IDIR) -g -Wall -ftest-coverage -fprofi
 
 TDIR=test
 
-TSRC=primeiroTeste.cpp
+TEXENAME=testa_string_soma
 
-TOBJS=$(ODIR)/string_soma.o $(ODIR)/primeiroTeste.o
+TSRC=$(TEXENAME).cpp
 
-TTARGET=run_tests
+TOBJS=$(ODIR)/$(MYLIB).o $(ODIR)/$(TEXENAME).o
 
-all: $(TTARGET) $(TARGET)
+all: $(TEXENAME) $(EXENAME)
 
 $(ODIR)/%.o : $(SDIR)/%.cpp $(DEPS)
 	$(CXX) -c -o $@ $< $(CFLAGS)
 	
-$(TARGET) : $(OBJS) $(DEPS)
+$(EXENAME) : $(OBJS) $(DEPS)
 	$(CXX) -o $@ $^ $(CFLAGS)
 	@echo " ###  Build ok ### "
 	cppcheck --enable=warning $(SDIR)
 
-test: $(TTARGET)
+test: $(TEXENAME)
 
-$(ODIR)/primeiroTeste.o: $(TDIR)/primeiroTeste.cpp $(DEPS)
+$(ODIR)/$(TEXENAME).o: $(TDIR)/$(TEXENAME).cpp $(DEPS)
 	$(CXX) -c -o $@ $< $(TFLAGS)
 
-$(TTARGET) : $(TOBJS) $(DEPS)
+$(TEXENAME) : $(TOBJS) $(DEPS)
 	$(CXX) -o $@ $^ $(TFLAGS)
 	@echo " ###  Gtest ok ### "
 	
