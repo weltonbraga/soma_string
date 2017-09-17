@@ -43,8 +43,8 @@ TEST (TestaStringSoma, DeZeroAteTresNum) {
 	EXPECT_EQ (INVALIDO, soma_string(entrada));
 
 }
-/*
-/// Proximo teste ignora numeros negativos
+
+/// Proibido numeros negativos
 TEST (TestaStringSoma, ProibidoNumNegativos) {
 	char * entrada;
 
@@ -56,7 +56,22 @@ TEST (TestaStringSoma, ProibidoNumNegativos) {
 	entrada = dado_02;
 	EXPECT_EQ (INVALIDO, soma_string(entrada));
 }
- */
+
+/// ignora numeros maiores que 1000
+TEST (TestaStringSoma, IgnoraMaioresQue1000) {
+	char * entrada;
+
+	char dado_01[]="3,2000\n";
+	entrada = dado_01;
+	EXPECT_EQ (3, soma_string(entrada));
+	
+	char dado_02[]="1001,1000\n";
+	entrada = dado_02;
+	EXPECT_EQ (1000, soma_string(entrada));
+}
+
+
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
