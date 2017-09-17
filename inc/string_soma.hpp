@@ -34,13 +34,16 @@ const int INVALIDO = -1;
 int soma_string(char *string_entrada);
 
 // verifica e retorna
-int calcula_resultado(t_calc &entrada);
+void calcula_resultado(t_calc &entrada);
 
 // descrição
 bool termina_com_barra_n(t_calc &entrada);
 
 /// busca e soma 
-void soma_numeros (t_calc &entrada);
+int soma_numeros (t_calc &entrada);
+
+/// retorna invalido ex: 1,2 \n
+bool espaco_no_final(t_calc &entrada);
 
 /// abre e armazena dados de entrada
 //void ler_entrada(char * string_entrada);

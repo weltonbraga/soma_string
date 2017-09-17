@@ -26,6 +26,10 @@ TSRC=$(TEXENAME).cpp
 
 TOBJS=$(ODIR)/$(MYLIB).o $(ODIR)/$(TEXENAME).o
 
+DEBUG=0
+
+CFLAGS += -DDEBUG=${DEBUG}
+
 all : test main
 
 main : $(ODIR)/$(EXENAME)

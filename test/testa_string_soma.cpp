@@ -5,13 +5,13 @@
 TEST (TestaStringSoma, TerminaComBarraN) {
 	char * entrada;
 
-	char dado_01[]="0,0";
+	char dado_01[]="1,0";
 	entrada = dado_01;
 	EXPECT_EQ (INVALIDO, soma_string(entrada));
 	
-	char dado_02[]="0,0\n";
+	char dado_02[]="1,0\n";
 	entrada = dado_02;
-	EXPECT_EQ (0 , soma_string(entrada));
+	EXPECT_EQ (1 , soma_string(entrada));
 }
 /// Quando o teste acima passar quero que o resultado aqui seja correto
 TEST (TestaStringSoma, ResultadoDaSoma) {
@@ -48,7 +48,7 @@ TEST (TestaStringSoma, DeZeroAteTresNum) {
 TEST (TestaStringSoma, ProibidoNumNegativos) {
 	char * entrada;
 
-	char dado_01[]="1,-2\n";
+	char dado_01[]="10,-7\n";
 	entrada = dado_01;
 	EXPECT_EQ (INVALIDO, soma_string(entrada));
 	
@@ -69,7 +69,35 @@ TEST (TestaStringSoma, IgnoraMaioresQue1000) {
 	entrada = dado_02;
 	EXPECT_EQ (1000, soma_string(entrada));
 }
+///invalida entrada com letras
+TEST (TestaStringSoma, ApenasNumeros) {
+	char * entrada;
 
+	char dado_01[]="3,a\n";
+	entrada = dado_01;
+	EXPECT_EQ (INVALIDO, soma_string(entrada));
+	
+	char dado_02[]="b2,22c\n";
+	entrada = dado_02;
+	EXPECT_EQ (INVALIDO, soma_string(entrada));
+}
+
+/// espaco no meio da string
+TEST (TestaStringSoma, Delimitador) {
+	char * entrada;
+
+	char dado_01[]="5,6 \n";
+	entrada = dado_01;
+	EXPECT_EQ (INVALIDO, soma_string(entrada));
+	
+	char dado_02[]="7, 8\n";
+	entrada = dado_02;
+	EXPECT_EQ (INVALIDO, soma_string(entrada));
+	
+	char dado_03[]="1 ,2,3\n";
+	entrada = dado_03;
+	EXPECT_EQ (INVALIDO , soma_string(entrada));
+}
 
 
 int main(int argc, char **argv) {
