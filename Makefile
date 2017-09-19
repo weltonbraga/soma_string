@@ -16,7 +16,7 @@ DEPS=$(IDIR)/$(MYLIB).hpp
 
 SDIR=src
 
-TFLAGS= -lgtest -lgtest_main -pthread -I$(IDIR) -g -Wall -ftest-coverage -fprofile-arcs -std=gnu++11
+TFLAGS= -I$(IDIR) -lgtest -lgtest_main -pthread -g -Wall -ftest-coverage -fprofile-arcs -std=gnu++11
 
 TDIR=test
 
