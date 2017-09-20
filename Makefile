@@ -32,22 +32,22 @@ CFLAGS += -DDEBUG=${DEBUG}
 
 all : test main
 
-main : $(ODIR)/$(EXENAME)
+main : $(EXENAME)
 
 $(ODIR)/%.o : $(SDIR)/%.cpp $(DEPS)
 	$(CXX) -c -o $@ $< $(CFLAGS)
 	
-$(ODIR)/$(EXENAME) : $(OBJS) $(DEPS)
+$(EXENAME) : $(OBJS) $(DEPS)
 	$(CXX) -o $@ $^ $(CFLAGS)
 	@echo " ###  check código ### "
 	cppcheck --enable=warning $(SDIR)
 
-test : $(ODIR)/$(TEXENAME)
+test : $(TEXENAME)
 
 $(ODIR)/$(TEXENAME).o : $(TDIR)/$(TEXENAME).cpp $(DEPS)
 	$(CXX) -c -o $@ $< $(TFLAGS)
 
-$(ODIR)/$(TEXENAME) : $(TOBJS) $(DEPS)
+$(TEXENAME) : $(TOBJS) $(DEPS)
 	$(CXX) -o $@ $^ $(TFLAGS)
 	@echo " ### check testes ### "
 	cppcheck --enable=warning $(TDIR)

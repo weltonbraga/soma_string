@@ -28,12 +28,17 @@ void calcula_resultado(t_calc &entrada){
 		entrada.resultado = INVALIDO;
 	if( tem_numeros_negativos( entrada.dado ) )
 		entrada.resultado = INVALIDO;
-	if( tem_muitos_delimitadores_entre_numeros( entrada.dado ))
+	if( tem_muitos_delimitadores_entre_numeros( entrada ))
 		entrada.resultado = INVALIDO;
 	if( define_delimitador(entrada.dado) )
 		if ( ! armazena_delimitador(entrada)) 
 			entrada.resultado = INVALIDO;
-		
+	if( mais_de_3_num_na_linha(entrada) )
+		entrada.resultado = INVALIDO;
+	if( sem_delimitador_entre_numeros(entrada.dado) )
+		entrada.resultado = INVALIDO;
+	if(delimitador_incorreto(entrada) )
+		entrada.resultado = INVALIDO;
 	entrada.resultado = soma_numeros(entrada);	
 }
 
@@ -108,19 +113,33 @@ bool tem_numeros_negativos(string s){
     return false;
 }
 
-bool tem_muitos_delimitadores_entre_numeros (string s){
-    
-    std::string delimitador = ",";
-    
-    std::regex e (delimitador + "(\\n)*" + delimitador);   // matches delimitador , 0 ou + \n entre eles
-    
+bool tem_muitos_delimitadores_entre_numeros (t_calc &entrada){
+    //std::cout << "f: tem_muitos_delimitadores_entre_numeros\n";
+	string s_aux ("(");//" (,|;)(\\n)*(,|;)
+	
+	string s_aux2 ("(\\n)*");
+
+	for (auto i : entrada.v_del)
+	{
+	  s_aux += i + "|";
+	}
+	s_aux.pop_back ();
+	
+	s_aux += ")";
+	
+	s_aux2 = s_aux + s_aux2 + s_aux;
+	
+	
+	//std::cout << s_aux2 << std::endl;
  
     int contador = 0;
     std::smatch m;
+	std::regex e ( s_aux2 );   // matches delimitador
+	string s = entrada.dado;
     
    // std::cout << "Target sequence: " << s << std::endl;
-    DEBUG_PRINT( "Regular expression: /,(\\n)*,/" );
-    DEBUG_PRINT( "The following matches and submatches were found:" );
+    DEBUG_PRINT( "Regular expression: /"<< s_aux <<"/" );
+    //DEBUG_PRINT( "The following matches and submatches were found:" );
     
     while (std::regex_search (s,m,e)) {
         for (auto x:m) {
@@ -151,8 +170,10 @@ bool define_delimitador(string s){
        // std::cout << std::endl;
         s = m.suffix().str();
     }
-	if (contador == 1 )
+	if (contador == 1 ){
+		//armazena_delimitador(entrada);
         return true;
+	}
     return false;
 }
 
@@ -197,7 +218,7 @@ bool armazena_delimitador (t_calc &entrada)
         DEBUG_PRINT( "Nada de delimitador" );
       return false;
     }
-for (auto i : entrada.v_del)
+	for (auto i : entrada.v_del)
     {
       DEBUG_PRINT( "d: " << i );
     }
@@ -212,14 +233,15 @@ for (auto i : entrada.v_del)
 	
 	s_aux += ")){3,}\\d+\\n";
 	
-	std::cout << s_aux << std::endl;
+	DEBUG_PRINT( s_aux );
  
 	/**************/
   return true;
 }
 
 bool mais_de_3_num_na_linha (t_calc &entrada){
-	string s_aux ("(\\d+(?<todos_delimitadores>");
+	//cout << "mais_de_3_num_na_linha\n";
+	string s_aux ("(\\d+("); // (\d+(?<todos_delimitadores>,)){3,}\d+\\n
 
 	for (auto i : entrada.v_del)
 	{
@@ -227,13 +249,19 @@ bool mais_de_3_num_na_linha (t_calc &entrada){
 	}
 	s_aux.pop_back ();
 	
-	s_aux += ")){3,}\\d+\\n";
+	s_aux += ")){3,}\\d+\n";
 	
-	std::cout << s_aux << std::endl;
+	//std::cout << s_aux << std::endl;
 	
 	int contador = 0;
     smatch m;
-    regex e (s_aux);   // matches  '//' no inicio da string 
+	
+	//cout << "aki\n\n";
+	//string s_aux2 ("(\\d+(?<todos_delimitadores>,)){3,}\\d+\\n");
+	//string s_aux2 ("(A candy)?(?(1) is true| is false)");
+	//std::cout << s_aux2 << std::endl;
+    regex e ( s_aux );   // matches  '//' no inicio da string 
+	///cout << "aki\n\n";
     string s = entrada.dado;
    // std::cout << "Target sequence: " << s << std::endl;
     //DEBUG_PRINT( "Regular expression: /\\n$/" );
@@ -247,42 +275,74 @@ bool mais_de_3_num_na_linha (t_calc &entrada){
        // std::cout << std::endl;
         s = m.suffix().str();
     }
-	if (contador == 0 )
+	if (contador > 0 )
+        return true;
+    return false;
+}
+bool sem_delimitador_entre_numeros (string s){
+	
+int contador = 0;
+    std::smatch m;
+    std::regex e ("\\d+(\\n)+\\d+");   // matches  '//' no inicio da string 
+    
+   // std::cout << "Target sequence: " << s << std::endl;
+    DEBUG_PRINT( "Regular expression: /\\d+(\\n)+\\d+" );
+    DEBUG_PRINT( "The following matches and submatches were found:" );
+    
+    while (std::regex_search (s,m,e)) {
+        for (auto x:m) {
+            contador++;
+           //DEBUG_PRINT( x );
+        }
+       // std::cout << std::endl;
+        s = m.suffix().str();
+    }
+	if (contador > 0 )
         return true;
     return false;
 }
 
 bool delimitador_incorreto(t_calc &entrada){
+	DEBUG_PRINT("delimitador_incorreto");
 	string s = entrada.dado;
 	string buffer;
 	bool buffer_ativado = false;
 	std::locale loc;
- 
+	DEBUG_PRINT( "entrada: " << s );
 	for (auto str = s.begin (); str != s.end (); ++str)
 	{
 
-	if (!isdigit((*str),loc) && (*str) != '\n')
-		buffer_ativado = true;
-	else if (buffer_ativado && isdigit((*str),loc))
-	{
-		buffer_ativado = false;
-		std::vector<string>::iterator it;
-		it = find (entrada.v_del.begin(), entrada.v_del.end(), buffer);
-		if (it != entrada.v_del.end()){
-			DEBUG_PRINT( "Element found in myvector: " << *it );
-			buffer.clear();
-		}else{
-			DEBUG_PRINT( "Element not found in myvector" );
-			return true;
+		if (!isdigit((*str),loc) && (*str) != '\n'){
+			buffer_ativado = true;
+			DEBUG_PRINT( "b ativado: " << (*str) );
 		}
-	  
-	}
-	if (buffer_ativado)
-		buffer += (*str);
-
+		else if (buffer_ativado && isdigit((*str),loc))
+		{
+			buffer_ativado = false;
+			DEBUG_PRINT( "b desativado: " << (*str) );
+			std::vector<string>::iterator it;
+			it = find (entrada.v_del.begin(), entrada.v_del.end(), buffer);
+			if (it != entrada.v_del.end()){
+				DEBUG_PRINT( "Element found in myvector: " << *it );
+				buffer.clear();
+			}else{
+				DEBUG_PRINT( buffer <<"< Element not found in myvector" );
+				for (std::vector<string>::iterator i = entrada.v_del.begin(); i != entrada.v_del.end(); ++i)
+					DEBUG_PRINT( *i );
+				DEBUG_PRINT( "len v_del: "<< entrada.v_del.size() <<"fim v_del" );
+				return true;
+			}
+		  
+		}
+		if (buffer_ativado){
+			buffer += (*str);
+			DEBUG_PRINT( "buffer +=" << (*str) );
+		}
     }
+	DEBUG_PRINT("chegou no fim ok");
 	return false;
 }
+
 int soma_numeros (t_calc &entrada){
 	string s = entrada.dado;
 	smatch m;

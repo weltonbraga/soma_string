@@ -34,11 +34,16 @@ TEST (TestaStringSoma_Proibido, EspacosEmBranco) {
 	EXPECT_FALSE( tem_espacos_em_branco("1,\n\n2,3\n4\n") );
 }
 TEST (TestaStringSoma_Proibido, tem_varios_delimitadores_entre_2_numeros) {
-	EXPECT_TRUE( tem_muitos_delimitadores_entre_numeros("1,,2\n") );
-	EXPECT_TRUE( tem_muitos_delimitadores_entre_numeros("1,\n,\n2,3,4\n") );
+	t_calc entrada;
+	entrada.dado = "1,,2\n";
+	EXPECT_TRUE( tem_muitos_delimitadores_entre_numeros(entrada) );
+	entrada.dado = "1,\n,\n2,3,4\n";
+	EXPECT_TRUE( tem_muitos_delimitadores_entre_numeros(entrada) );
 	
-	EXPECT_FALSE( tem_muitos_delimitadores_entre_numeros("1,2,3") );
-	EXPECT_FALSE( tem_muitos_delimitadores_entre_numeros("1,\n\n2,3\n4\n") );
+	entrada.dado = "1,2,3";
+	EXPECT_FALSE( tem_muitos_delimitadores_entre_numeros(entrada) );
+	entrada.dado = "1,\n\n2,3\n4\n";
+	EXPECT_FALSE( tem_muitos_delimitadores_entre_numeros(entrada) );
 }
 
 TEST (TestaStringSoma_PodeAcontecer, DefineDelimitadores) {
@@ -67,6 +72,8 @@ TEST (TestaStringSoma_PodeAcontecer, ArmazenaNovosDelimitadores) {
 TEST (TestaStringSoma_PodeAcontecer, delimitador_incorreto){
 	t_calc entrada;
 	entrada.dado = "1;2\n";
+	EXPECT_TRUE( delimitador_incorreto( entrada ) );
+	entrada.dado = "1,2\n";
 	EXPECT_FALSE( delimitador_incorreto( entrada ) );
 }
 
@@ -81,6 +88,15 @@ TEST (TestaStringSoma_Proibido, MaisDe3naLinha) {
 	EXPECT_FALSE (mais_de_3_num_na_linha(entrada));
 
 }
+
+TEST (TestaStringSoma_Proibido, SemDelimitador) {
+
+	EXPECT_TRUE (sem_delimitador_entre_numeros("1,2\n3,4\n"));
+	
+	EXPECT_FALSE (sem_delimitador_entre_numeros("1,2,3\n,4\n"));
+
+}
+
 
 /*// Quando o teste acima passar quero que o resultado aqui seja correto
 TEST (TestaStringSoma, ResultadoDaSoma) {

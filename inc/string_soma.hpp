@@ -27,7 +27,7 @@ using std::to_string;
 typedef struct tt_calc {
   int resultado;
   string dado;
-  vector<string> v_del;
+  vector<string> v_del{","};
 }t_calc;
 
 /// retorno para dado de entrada que não satisfaz as especificações
@@ -46,7 +46,7 @@ bool tem_numeros_negativos(string );
 
 bool tem_espacos_em_branco(string );
 
-bool tem_muitos_delimitadores_entre_numeros(string );
+bool tem_muitos_delimitadores_entre_numeros(t_calc &entrada);
 
 bool define_delimitador(string );
 
@@ -58,6 +58,8 @@ int soma_numeros (t_calc &entrada);
 bool delimitador_incorreto(t_calc &entrada);
 
 bool mais_de_3_num_na_linha(t_calc &entrada);
+
+bool sem_delimitador_entre_numeros (string);
 
 /// retorna invalido ex: 1,2 \n
 //bool tem_espacos_na_string(string &entrada);
