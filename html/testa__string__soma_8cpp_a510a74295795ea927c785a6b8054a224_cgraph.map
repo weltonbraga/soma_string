@@ -1,0 +1,4 @@
+<map id="TEST" name="TEST">
+<area shape="rect" id="node2" href="$string__soma_8hpp.html#a03f7db3faef208d4657e6c6d1a6be139" title="retorna verdadeiro caso exista delimitadores não conhecidos na string " alt="" coords="107,5,265,32"/>
+<area shape="rect" id="node3" href="$string__soma_8cpp.html#a2a7594deec6932db6dd072f7084382b8" title="retorna verdadeiro se conseguir armazenar os delimitadores " alt="" coords="313,5,480,32"/>
+</map>

@@ -45,7 +45,7 @@ void calcula_resultado(t_calc &entrada){
 		entrada.resultado = soma_numeros(entrada);	
 }
 
-/// verifica '\n' final e se tem apenas letras
+
 bool ausencia_barra_n_final (string s){
 	DEBUG_PRINT( "\n	###### fun ausencia_barra_n_final \n" );
     int contador = 0;
@@ -94,7 +94,6 @@ bool tem_espacos_em_branco(string s){
     return false;
 }
 
-/// Numeros negativos restorna INVALIDO
 bool tem_numeros_negativos(string s){
 	int conta_negativos = 0;
     std::smatch m;
@@ -307,7 +306,7 @@ int contador = 0;
         return true;
     return false;
 }
-/// Testa se os delimitadores usados são os corretos
+
 bool delimitador_incorreto(t_calc &entrada){
 	DEBUG_PRINT(" \n\n #### delimitador_incorreto \n");
 	string s = entrada.dado;

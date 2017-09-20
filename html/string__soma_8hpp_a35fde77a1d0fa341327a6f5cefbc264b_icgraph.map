@@ -1,0 +1,7 @@
+<map id="ausencia_barra_n_final" name="ausencia_barra_n_final">
+<area shape="rect" id="node2" href="$string__soma_8cpp.html#a2939142a924ccd883ebe9904ffeb6184" title="verifica e retorna resultado ou INVALIDO " alt="" coords="221,31,355,57"/>
+<area shape="rect" id="node6" href="$testa__string__soma_8cpp.html#a6c1f17160b5c19539d8f3f7d29847669" title="Verifica se é invalido quando entrada não termina em &#39; &#39;. " alt="" coords="261,81,315,108"/>
+<area shape="rect" id="node3" href="$string__soma_8cpp.html#a5584a11d7a161d9a35a2e76cb51681bd" title="função principal " alt="" coords="403,31,504,57"/>
+<area shape="rect" id="node4" href="$testa__soma__string__stdin_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4" title="main" alt="" coords="552,5,607,32"/>
+<area shape="rect" id="node5" href="$testa__string__soma_8cpp.html#a4149b88e6cabedc2a744ecc3aea90dcd" title="TEST" alt="" coords="553,56,606,83"/>
+</map>

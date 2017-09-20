@@ -18,7 +18,7 @@ TEST (TestaStringSoma_Necessario, UsadoDelimitadorCorreto) {
 	ASSERT_TRUE( delimitador_incorreto(entrada) );
 }
 
-///Verifica se é invalido quando entrada não termina em '\n'
+/// Verifica se é invalido quando entrada não termina em '\n'
 TEST (TestaStringSoma_Necessario, TerminaComBarraN) {
 	EXPECT_TRUE( ausencia_barra_n_final("1,\n2"));
 	EXPECT_TRUE( ausencia_barra_n_final("1,\n\n\n\n0"));
@@ -45,7 +45,7 @@ TEST (TestaStringSoma, ApenasNumeros) {
 	entrada = dado_02;
 	EXPECT_EQ (INVALIDO, soma_string(entrada));
 }
-
+/// numero no inicio ou no meio da string
 TEST (TestaStringSoma_Proibido, NumNegativos) {
 	EXPECT_TRUE( tem_numeros_negativos("-1,2,3") );
 	EXPECT_TRUE( tem_numeros_negativos("1,\n\n2,3,-4\n") );
@@ -54,6 +54,7 @@ TEST (TestaStringSoma_Proibido, NumNegativos) {
 	EXPECT_FALSE( tem_numeros_negativos("1,\n\n2,3\n4\n") );
 }
 
+/// verifica espaços entre '\n' e no meio da string
 TEST (TestaStringSoma_Proibido, EspacosEmBranco) {
 	EXPECT_TRUE( tem_espacos_em_branco("1,2 \n") );
 	EXPECT_TRUE( tem_espacos_em_branco("1 ,\n \n2,3,-4\n") );
@@ -61,6 +62,7 @@ TEST (TestaStringSoma_Proibido, EspacosEmBranco) {
 	EXPECT_FALSE( tem_espacos_em_branco("1,2,3") );
 	EXPECT_FALSE( tem_espacos_em_branco("1,\n\n2,3\n4\n") );
 }
+/// delimitadores separados por nenhum ou mais '\n'
 TEST (TestaStringSoma_Proibido, tem_varios_delimitadores_entre_2_numeros) {
 	t_calc entrada;
 	entrada.dado = "1,,2\n";
@@ -73,13 +75,14 @@ TEST (TestaStringSoma_Proibido, tem_varios_delimitadores_entre_2_numeros) {
 	entrada.dado = "1,\n\n2,3\n4\n";
 	EXPECT_FALSE( tem_muitos_delimitadores_entre_numeros(entrada) );
 }
-
+/// verifica capitura de delimitador caso nao seja declarado novo delimitador
 TEST (TestaStringSoma_PodeAcontecer, DefineDelimitadores) {
 	EXPECT_TRUE( define_delimitador( "//[;]\n2;3\n" ) );
 	
 	EXPECT_FALSE( define_delimitador( "2***3***4\n" ) );
 }
 
+/// verifica casos em que delimitadores novo são invalidos
 TEST (TestaStringSoma_PodeAcontecer, ArmazenaNovosDelimitadores) {
 	t_calc entrada;
 	entrada.dado = "//[;]\n2;3\n" ;
@@ -97,6 +100,7 @@ TEST (TestaStringSoma_PodeAcontecer, ArmazenaNovosDelimitadores) {
 
 }
 
+/// verifica se os delimitadores usados são conhecidos
 TEST (TestaStringSoma_PodeAcontecer, delimitador_incorreto){
 	t_calc entrada;
 	entrada.dado = "1;2\n";
@@ -117,6 +121,7 @@ TEST (TestaStringSoma_Proibido, MaisDe3naLinha) {
 
 }
 
+/// verifica numeros separados por '\n' e delimitadores misturados
 TEST (TestaStringSoma_Proibido, SemDelimitador) {
 
 	EXPECT_TRUE (sem_delimitador_entre_numeros("1,2\n3,4\n"));
@@ -199,7 +204,7 @@ TEST (TestaStringSoma, Delimitador) {
 	entrada = dado_03;
 	EXPECT_EQ (INVALIDO , soma_string(entrada));
 }
-
+/// numeros negativos em varias posições da strings
 TEST (TestaStringSoma, PROIBIDO) {
 	EXPECT_FALSE(tem_numeros_negativos("1,2,3\n4\n"));
 	EXPECT_TRUE(tem_numeros_negativos("-1,2,-3\n4\n"));
