@@ -4,7 +4,9 @@
  *  \author    Welton de Almeida Braga - 16/0148880
  *  \date      20-09-2017
  */
+/// includes
 #include "string_soma.hpp"
+
 
 #if DEBUG
 	#define DEBUG_PRINT(x) do{cout << x << endl;}while(0);

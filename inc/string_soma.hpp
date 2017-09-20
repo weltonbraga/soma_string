@@ -4,6 +4,7 @@
  *  \author    Welton de Almeida Braga - 16/0148880
  *  \date      20-09-2017
  */
+/// diretivas de compilador
 #ifndef MYLIB
 #define MYLIB
 
