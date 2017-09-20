@@ -8,6 +8,7 @@
 #include <vector>
 #include <algorithm>
 #include <regex>
+#include <locale> 
 
 using std::cout;
 using std::endl;
@@ -47,8 +48,6 @@ bool tem_espacos_em_branco(string );
 
 bool tem_muitos_delimitadores_entre_numeros(string );
 
-bool delimitador_correto (string );
-
 bool define_delimitador(string );
 
 bool armazena_delimitador(t_calc &entrada);
@@ -56,7 +55,9 @@ bool armazena_delimitador(t_calc &entrada);
 /// busca e soma 
 int soma_numeros (t_calc &entrada);
 
+bool delimitador_incorreto(t_calc &entrada);
 
+bool mais_de_3_num_na_linha(t_calc &entrada);
 
 /// retorna invalido ex: 1,2 \n
 //bool tem_espacos_na_string(string &entrada);

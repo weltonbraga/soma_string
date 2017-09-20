@@ -161,20 +161,24 @@ bool armazena_delimitador (t_calc &entrada)
   string s = entrada.dado;
   string buffer;
   bool buffer_ativado = false;
- 
+	  
  /// elimina delimitadores anteriores
  entrada.v_del.clear();
 
   for (auto str = s.begin (); str != s.end (); ++str)
     {
-      if (buffer_ativado)
-	buffer += (*str);
-      if ((*str) == '[')
-	buffer_ativado = true;
+	if (buffer_ativado)
+		buffer += (*str);
+	if ((*str) == '[')
+		buffer_ativado = true;
       else if ((*str) == ']')
 	{
 	  buffer_ativado = false;
 	  buffer.pop_back ();
+	  /// eveita buffer vazio quando a string for "//[]"
+	  if ( buffer.size() == 0)
+			return false;
+			
 	  entrada.v_del.push_back (buffer);
 	  buffer.clear ();
 	  if ((*(str + 1)) != '[' && (*(str + 1)) != '\n')
@@ -197,10 +201,86 @@ for (auto i : entrada.v_del)
     {
       DEBUG_PRINT( "d: " << i );
     }
+	/**************/
+	string s_aux ("(\\d+(?<todos_delimitadores>");
+
+	for (auto i : entrada.v_del)
+	{
+	  s_aux += i + "|";
+	}
+	s_aux.pop_back ();
+	
+	s_aux += ")){3,}\\d+\\n";
+	
+	std::cout << s_aux << std::endl;
+ 
+	/**************/
   return true;
 }
 
-bool delimitador_correto(string s){
+bool mais_de_3_num_na_linha (t_calc &entrada){
+	string s_aux ("(\\d+(?<todos_delimitadores>");
+
+	for (auto i : entrada.v_del)
+	{
+	  s_aux += i + "|";
+	}
+	s_aux.pop_back ();
+	
+	s_aux += ")){3,}\\d+\\n";
+	
+	std::cout << s_aux << std::endl;
+	
+	int contador = 0;
+    smatch m;
+    regex e (s_aux);   // matches  '//' no inicio da string 
+    string s = entrada.dado;
+   // std::cout << "Target sequence: " << s << std::endl;
+    //DEBUG_PRINT( "Regular expression: /\\n$/" );
+   // DEBUG_PRINT( "The following matches and submatches were found:" );
+    
+    while (std::regex_search (s,m,e)) {
+        for (auto x:m) {
+            contador++;
+           //DEBUG_PRINT( x );
+        }
+       // std::cout << std::endl;
+        s = m.suffix().str();
+    }
+	if (contador == 0 )
+        return true;
+    return false;
+}
+
+bool delimitador_incorreto(t_calc &entrada){
+	string s = entrada.dado;
+	string buffer;
+	bool buffer_ativado = false;
+	std::locale loc;
+ 
+	for (auto str = s.begin (); str != s.end (); ++str)
+	{
+
+	if (!isdigit((*str),loc) && (*str) != '\n')
+		buffer_ativado = true;
+	else if (buffer_ativado && isdigit((*str),loc))
+	{
+		buffer_ativado = false;
+		std::vector<string>::iterator it;
+		it = find (entrada.v_del.begin(), entrada.v_del.end(), buffer);
+		if (it != entrada.v_del.end()){
+			DEBUG_PRINT( "Element found in myvector: " << *it );
+			buffer.clear();
+		}else{
+			DEBUG_PRINT( "Element not found in myvector" );
+			return true;
+		}
+	  
+	}
+	if (buffer_ativado)
+		buffer += (*str);
+
+    }
 	return false;
 }
 int soma_numeros (t_calc &entrada){

@@ -58,6 +58,27 @@ TEST (TestaStringSoma_PodeAcontecer, ArmazenaNovosDelimitadores) {
 	EXPECT_FALSE( armazena_delimitador( entrada ) );
 	entrada.dado = "//[***]2***3***4\n";
 	EXPECT_FALSE( armazena_delimitador( entrada ) );
+	entrada.dado = "//[]1;2\n";
+	EXPECT_FALSE( armazena_delimitador( entrada ) );
+
+
+}
+
+TEST (TestaStringSoma_PodeAcontecer, delimitador_incorreto){
+	t_calc entrada;
+	entrada.dado = "1;2\n";
+	EXPECT_FALSE( delimitador_incorreto( entrada ) );
+}
+
+
+/// quantidade de numeros menor que 1 ou maior que 3
+TEST (TestaStringSoma_Proibido, MaisDe3naLinha) {
+	t_calc entrada;
+	entrada.dado = "1,2,3,4\n";
+	EXPECT_TRUE (mais_de_3_num_na_linha(entrada));
+	
+	entrada.dado = "1,2,3\n,4\n";
+	EXPECT_FALSE (mais_de_3_num_na_linha(entrada));
 
 }
 
