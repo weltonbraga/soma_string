@@ -8,14 +8,14 @@
 
 
 int soma_string(char * string_entrada ) {
-	DEBUG_PRINT("string_soma()");
+	DEBUG_PRINT("\n\n	***		string_soma()\n\n");
 	t_calc entrada;
 	
 	entrada.dado = string(string_entrada );
-	entrada.v_del.push_back(",");
-	DEBUG_PRINT(entrada.dado);
+	DEBUG_PRINT( " >>>>>>>>> " << entrada.dado << " <<<<<<<<<<<<<");
 	
 	calcula_resultado(entrada);
+	DEBUG_PRINT("\n\n	***		fim string_soma()\n\n");
 	return entrada.resultado;
 }
 
@@ -24,33 +24,37 @@ void calcula_resultado(t_calc &entrada){
 	
 	if( ausencia_barra_n_final( entrada.dado ) )
 		entrada.resultado = INVALIDO;
-	if( tem_espacos_em_branco( entrada.dado ) )
+	else if( tem_espacos_em_branco( entrada.dado ) )
 		entrada.resultado = INVALIDO;
-	if( tem_numeros_negativos( entrada.dado ) )
+	else if( tem_numeros_negativos( entrada.dado ) )
 		entrada.resultado = INVALIDO;
-	if( tem_muitos_delimitadores_entre_numeros( entrada ))
+	else if( tem_muitos_delimitadores_entre_numeros( entrada ))
 		entrada.resultado = INVALIDO;
-	if( define_delimitador(entrada.dado) )
+	else if( define_delimitador(entrada.dado) ) 
+	{
 		if ( ! armazena_delimitador(entrada)) 
 			entrada.resultado = INVALIDO;
-	if( mais_de_3_num_na_linha(entrada) )
+	}
+	else if( mais_de_3_num_na_linha(entrada) )
 		entrada.resultado = INVALIDO;
-	if( sem_delimitador_entre_numeros(entrada.dado) )
+	else if( sem_delimitador_entre_numeros(entrada.dado) )
 		entrada.resultado = INVALIDO;
-	if(delimitador_incorreto(entrada) )
+	else if(delimitador_incorreto(entrada) )
 		entrada.resultado = INVALIDO;
-	entrada.resultado = soma_numeros(entrada);	
+	else
+		entrada.resultado = soma_numeros(entrada);	
 }
 
 /// verifica '\n' final e se tem apenas letras
 bool ausencia_barra_n_final (string s){
+	DEBUG_PRINT( "\n	###### fun ausencia_barra_n_final \n" );
     int contador = 0;
     std::smatch m;
     std::regex e ("\\n$");   // matches 
     
-   // std::cout << "Target sequence: " << s << std::endl;
+    DEBUG_PRINT( "Target sequence: " << s );
     DEBUG_PRINT( "Regular expression: /\\n$/" );
-    DEBUG_PRINT( "The following matches and submatches were found:" );
+    
     
     while (std::regex_search (s,m,e)) {
         for (auto x:m) {
@@ -60,6 +64,8 @@ bool ausencia_barra_n_final (string s){
        // std::cout << std::endl;
         s = m.suffix().str();
     }
+	DEBUG_PRINT( "contador:" << contador );
+	DEBUG_PRINT( "\n	###### FIM FIM  fun ausencia_barra_n_final \n" );
      if (contador == 0 )
         return true;
     return false;
@@ -301,22 +307,26 @@ int contador = 0;
         return true;
     return false;
 }
-
+/// Testa se os delimitadores usados são os corretos
 bool delimitador_incorreto(t_calc &entrada){
-	DEBUG_PRINT("delimitador_incorreto");
+	DEBUG_PRINT(" \n\n #### delimitador_incorreto \n");
 	string s = entrada.dado;
 	string buffer;
 	bool buffer_ativado = false;
+	bool travado = true;
 	std::locale loc;
 	DEBUG_PRINT( "entrada: " << s );
 	for (auto str = s.begin (); str != s.end (); ++str)
 	{
-
-		if (!isdigit((*str),loc) && (*str) != '\n'){
+		
+		if (!isdigit((*str),loc) && (*str) != '\n' && !travado){
 			buffer_ativado = true;
 			DEBUG_PRINT( "b ativado: " << (*str) );
+		} 
+		else if( isdigit((*str),loc) && (*str) != '\n' ){
+			travado = false;
 		}
-		else if (buffer_ativado && isdigit((*str),loc))
+		else if (buffer_ativado && isdigit((*str),loc) && !travado)
 		{
 			buffer_ativado = false;
 			DEBUG_PRINT( "b desativado: " << (*str) );
@@ -326,20 +336,29 @@ bool delimitador_incorreto(t_calc &entrada){
 				DEBUG_PRINT( "Element found in myvector: " << *it );
 				buffer.clear();
 			}else{
-				DEBUG_PRINT( buffer <<"< Element not found in myvector" );
+				DEBUG_PRINT("b >" <<buffer <<"< Element not found in myvector" );
 				for (std::vector<string>::iterator i = entrada.v_del.begin(); i != entrada.v_del.end(); ++i)
-					DEBUG_PRINT( *i );
+					DEBUG_PRINT("v: " <<  *i );
 				DEBUG_PRINT( "len v_del: "<< entrada.v_del.size() <<"fim v_del" );
 				return true;
 			}
 		  
+		} else {
+			if( (*str) == '/' ){
+				if((*(str+1)) != '/' ){
+					armazena_delimitador(entrada);
+					//travado = false;
+				}
+			} else if( (*str) == '\n' )
+				travado = false;
 		}
+		
 		if (buffer_ativado){
 			buffer += (*str);
 			DEBUG_PRINT( "buffer +=" << (*str) );
 		}
     }
-	DEBUG_PRINT("chegou no fim ok");
+	DEBUG_PRINT(" ###  delimitador chegou no fim ok");
 	return false;
 }
 

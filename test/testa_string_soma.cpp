@@ -1,6 +1,23 @@
 #include "gtest/gtest.h"
 #include "string_soma.hpp"
 
+/**** Teste que não passa, não implementado
+
+Ao adicionar um novo delimitador
+*/
+TEST (TestaStringSoma_Necessario, UsadoDelimitadorCorreto) {
+	t_calc entrada;
+	
+	entrada.dado ="//[;]\n1;2\n";
+	ASSERT_FALSE( delimitador_incorreto(entrada) );
+	
+	entrada.dado ="//[**]\n1**2\n**3**4\n";
+	ASSERT_FALSE( delimitador_incorreto(entrada) );
+	
+	entrada.dado ="1;2\n";
+	ASSERT_TRUE( delimitador_incorreto(entrada) );
+}
+
 ///Verifica se é invalido quando entrada não termina em '\n'
 TEST (TestaStringSoma_Necessario, TerminaComBarraN) {
 	EXPECT_TRUE( ausencia_barra_n_final("1,\n2"));
@@ -9,15 +26,26 @@ TEST (TestaStringSoma_Necessario, TerminaComBarraN) {
 	EXPECT_FALSE( ausencia_barra_n_final("1,2\n\n\n"));
 	EXPECT_FALSE( ausencia_barra_n_final("1\n\n,0\n"));
 }
-/*
-TEST (TestaStringSoma_Necessario, UsadoDelimitadorCorreto) {
-	EXPECT_TRUE( delimitador_correto("1,2\n") );
-	EXPECT_TRUE( delimitador_correto("//[;]\n1;2\n") );
 
-	EXPECT_FALSE( delimitador_correto("1;2\n") );
-	EXPECT_FALSE( delimitador_correto("1-2\n"));
-}
+
+/**** Teste que não passa, não implementado 
+
+Aceita entradas inválidas de numeros e letras misturadas
+
 */
+
+TEST (TestaStringSoma, ApenasNumeros) {
+	char * entrada;
+
+	char dado_01[]="3,a\n";
+	entrada = dado_01;
+	EXPECT_EQ (INVALIDO, soma_string(entrada));
+	
+	char dado_02[]="b2,22c\n";
+	entrada = dado_02;
+	EXPECT_EQ (INVALIDO, soma_string(entrada));
+}
+
 TEST (TestaStringSoma_Proibido, NumNegativos) {
 	EXPECT_TRUE( tem_numeros_negativos("-1,2,3") );
 	EXPECT_TRUE( tem_numeros_negativos("1,\n\n2,3,-4\n") );
@@ -98,8 +126,8 @@ TEST (TestaStringSoma_Proibido, SemDelimitador) {
 }
 
 
-/*// Quando o teste acima passar quero que o resultado aqui seja correto
-TEST (TestaStringSoma, ResultadoDaSoma) {
+/// Quando o teste acima passar quero que o resultado aqui seja correto
+TEST (TestaStringSoma_calcular, ResultadoDaSoma) {
 	char * entrada;
 
 	char dado_01[]=",\n";
@@ -154,19 +182,7 @@ TEST (TestaStringSoma, IgnoraMaioresQue1000) {
 	entrada = dado_02;
 	EXPECT_EQ (1000, soma_string(entrada));
 }
-///invalida entrada com letras
-TEST (TestaStringSoma, ApenasNumeros) {
-	char * entrada;
 
-	char dado_01[]="3,a\n";
-	entrada = dado_01;
-	EXPECT_EQ (INVALIDO, soma_string(entrada));
-	
-	char dado_02[]="b2,22c\n";
-	entrada = dado_02;
-	EXPECT_EQ (INVALIDO, soma_string(entrada));
-}
-//
 /// espaco no meio da string
 TEST (TestaStringSoma, Delimitador) {
 	char * entrada;
@@ -189,7 +205,7 @@ TEST (TestaStringSoma, PROIBIDO) {
 	EXPECT_TRUE(tem_numeros_negativos("-1,2,-3\n4\n"));
 	EXPECT_TRUE(tem_numeros_negativos("1,2,-3\n4\n"));
 }
-*/
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
