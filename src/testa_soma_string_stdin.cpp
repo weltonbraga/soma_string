@@ -1,3 +1,9 @@
+/*! 
+ *  \brief     Trabalho 1 - MP
+ *  \details   Métodos de Programação - 201600
+ *  \author    Welton de Almeida Braga - 16/0148880
+ *  \date      20-09-2017
+ */
 #include "string_soma.hpp"
 
 //#define DEBUG
