@@ -9,7 +9,15 @@ TEST (TestaStringSoma_Necessario, TerminaComBarraN) {
 	EXPECT_FALSE( ausencia_barra_n_final("1,2\n\n\n"));
 	EXPECT_FALSE( ausencia_barra_n_final("1\n\n,0\n"));
 }
+/*
+TEST (TestaStringSoma_Necessario, UsadoDelimitadorCorreto) {
+	EXPECT_TRUE( delimitador_correto("1,2\n") );
+	EXPECT_TRUE( delimitador_correto("//[;]\n1;2\n") );
 
+	EXPECT_FALSE( delimitador_correto("1;2\n") );
+	EXPECT_FALSE( delimitador_correto("1-2\n"));
+}
+*/
 TEST (TestaStringSoma_Proibido, NumNegativos) {
 	EXPECT_TRUE( tem_numeros_negativos("-1,2,3") );
 	EXPECT_TRUE( tem_numeros_negativos("1,\n\n2,3,-4\n") );

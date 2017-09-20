@@ -47,7 +47,9 @@ bool tem_espacos_em_branco(string );
 
 bool tem_muitos_delimitadores_entre_numeros(string );
 
-bool define_delimitador(string s);
+bool delimitador_correto (string );
+
+bool define_delimitador(string );
 
 bool armazena_delimitador(t_calc &entrada);
 

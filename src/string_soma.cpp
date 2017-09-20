@@ -10,8 +10,11 @@
 int soma_string(char * string_entrada ) {
 	DEBUG_PRINT("string_soma()");
 	t_calc entrada;
+	
 	entrada.dado = string(string_entrada );
+	entrada.v_del.push_back(",");
 	DEBUG_PRINT(entrada.dado);
+	
 	calcula_resultado(entrada);
 	return entrada.resultado;
 }
@@ -176,7 +179,7 @@ bool armazena_delimitador (t_calc &entrada)
 	  buffer.clear ();
 	  if ((*(str + 1)) != '[' && (*(str + 1)) != '\n')
 	  {
-        std::cout << (*(str + 1)) << " ao invez de \\n!" << std::endl;
+        DEBUG_PRINT( (*(str + 1)) << " ao invez de \\n!" );
         return false;
 	  }
 	}
@@ -197,6 +200,9 @@ for (auto i : entrada.v_del)
   return true;
 }
 
+bool delimitador_correto(string s){
+	return false;
+}
 int soma_numeros (t_calc &entrada){
 	string s = entrada.dado;
 	smatch m;
