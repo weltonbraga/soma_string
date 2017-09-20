@@ -2,18 +2,58 @@
 #include "string_soma.hpp"
 
 ///Verifica se é invalido quando entrada não termina em '\n'
-TEST (TestaStringSoma, TerminaComBarraN) {
-	char * entrada;
+TEST (TestaStringSoma_Necessario, TerminaComBarraN) {
+	EXPECT_TRUE( ausencia_barra_n_final("1,\n2"));
+	EXPECT_TRUE( ausencia_barra_n_final("1,\n\n\n\n0"));
 
-	char dado_01[]="1,0";
-	entrada = dado_01;
-	EXPECT_EQ (INVALIDO, soma_string(entrada));
-	
-	char dado_02[]="1,0\n";
-	entrada = dado_02;
-	EXPECT_EQ (1 , soma_string(entrada));
+	EXPECT_FALSE( ausencia_barra_n_final("1,2\n\n\n"));
+	EXPECT_FALSE( ausencia_barra_n_final("1\n\n,0\n"));
 }
-/// Quando o teste acima passar quero que o resultado aqui seja correto
+
+TEST (TestaStringSoma_Proibido, NumNegativos) {
+	EXPECT_TRUE( tem_numeros_negativos("-1,2,3") );
+	EXPECT_TRUE( tem_numeros_negativos("1,\n\n2,3,-4\n") );
+	
+	EXPECT_FALSE( tem_numeros_negativos("1,2,3") );
+	EXPECT_FALSE( tem_numeros_negativos("1,\n\n2,3\n4\n") );
+}
+
+TEST (TestaStringSoma_Proibido, EspacosEmBranco) {
+	EXPECT_TRUE( tem_espacos_em_branco("1,2 \n") );
+	EXPECT_TRUE( tem_espacos_em_branco("1 ,\n \n2,3,-4\n") );
+	
+	EXPECT_FALSE( tem_espacos_em_branco("1,2,3") );
+	EXPECT_FALSE( tem_espacos_em_branco("1,\n\n2,3\n4\n") );
+}
+TEST (TestaStringSoma_Proibido, tem_varios_delimitadores_entre_2_numeros) {
+	EXPECT_TRUE( tem_muitos_delimitadores_entre_numeros("1,,2\n") );
+	EXPECT_TRUE( tem_muitos_delimitadores_entre_numeros("1,\n,\n2,3,4\n") );
+	
+	EXPECT_FALSE( tem_muitos_delimitadores_entre_numeros("1,2,3") );
+	EXPECT_FALSE( tem_muitos_delimitadores_entre_numeros("1,\n\n2,3\n4\n") );
+}
+
+TEST (TestaStringSoma_PodeAcontecer, DefineDelimitadores) {
+	EXPECT_TRUE( define_delimitador( "//[;]\n2;3\n" ) );
+	
+	EXPECT_FALSE( define_delimitador( "2***3***4\n" ) );
+}
+
+TEST (TestaStringSoma_PodeAcontecer, ArmazenaNovosDelimitadores) {
+	t_calc entrada;
+	entrada.dado = "//[;]\n2;3\n" ;
+	EXPECT_TRUE( armazena_delimitador( entrada ) );
+	entrada.dado ="//[**][%%%]\n2**1%%%3\n";
+	EXPECT_TRUE( armazena_delimitador( entrada ) );
+	
+	entrada.dado = "2***3***4\n"  ;
+	EXPECT_FALSE( armazena_delimitador( entrada ) );
+	entrada.dado = "//[***]2***3***4\n";
+	EXPECT_FALSE( armazena_delimitador( entrada ) );
+
+}
+
+/*// Quando o teste acima passar quero que o resultado aqui seja correto
 TEST (TestaStringSoma, ResultadoDaSoma) {
 	char * entrada;
 
@@ -81,7 +121,7 @@ TEST (TestaStringSoma, ApenasNumeros) {
 	entrada = dado_02;
 	EXPECT_EQ (INVALIDO, soma_string(entrada));
 }
-
+//
 /// espaco no meio da string
 TEST (TestaStringSoma, Delimitador) {
 	char * entrada;
@@ -99,7 +139,12 @@ TEST (TestaStringSoma, Delimitador) {
 	EXPECT_EQ (INVALIDO , soma_string(entrada));
 }
 
-
+TEST (TestaStringSoma, PROIBIDO) {
+	EXPECT_FALSE(tem_numeros_negativos("1,2,3\n4\n"));
+	EXPECT_TRUE(tem_numeros_negativos("-1,2,-3\n4\n"));
+	EXPECT_TRUE(tem_numeros_negativos("1,2,-3\n4\n"));
+}
+*/
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

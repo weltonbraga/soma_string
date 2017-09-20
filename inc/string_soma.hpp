@@ -21,10 +21,12 @@ using std::regex;
 using std::smatch;
 using std::regex_search;
 using std::stoi;
+using std::to_string;
 
 typedef struct tt_calc {
   int resultado;
   string dado;
+  vector<string> v_del;
 }t_calc;
 
 /// retorno para dado de entrada que não satisfaz as especificações
@@ -37,13 +39,25 @@ int soma_string(char *string_entrada);
 void calcula_resultado(t_calc &entrada);
 
 // descrição
-bool termina_com_barra_n(t_calc &entrada);
+bool ausencia_barra_n_final(string );
+
+bool tem_numeros_negativos(string );
+
+bool tem_espacos_em_branco(string );
+
+bool tem_muitos_delimitadores_entre_numeros(string );
+
+bool define_delimitador(string s);
+
+bool armazena_delimitador(t_calc &entrada);
 
 /// busca e soma 
 int soma_numeros (t_calc &entrada);
 
+
+
 /// retorna invalido ex: 1,2 \n
-bool espaco_no_final(t_calc &entrada);
+//bool tem_espacos_na_string(string &entrada);
 
 /// abre e armazena dados de entrada
 //void ler_entrada(char * string_entrada);
