@@ -12,17 +12,23 @@
 
 Ao adicionar um novo delimitador
 */
-TEST (TestaStringSoma_Necessario, UsadoDelimitadorCorreto) {
+TEST (TestaStringSoma_Necessario, UsadoDelimitadorIncorreto) {
 	t_calc entrada;
-	
 	entrada.dado ="//[;]\n1;2\n";
-	ASSERT_FALSE( delimitador_incorreto(entrada) );
-	
+	if( define_delimitador(entrada.dado) ) 
+		if ( armazena_delimitador(entrada)) 
+			ASSERT_FALSE( delimitador_incorreto(entrada) );
+		
+
 	entrada.dado ="//[**]\n1**2\n**3**4\n";
-	ASSERT_FALSE( delimitador_incorreto(entrada) );
-	
+	if( define_delimitador(entrada.dado) ) 
+		if ( armazena_delimitador(entrada)) 
+			ASSERT_FALSE( delimitador_incorreto(entrada) );
+		
 	entrada.dado ="1;2\n";
-	ASSERT_TRUE( delimitador_incorreto(entrada) );
+	if( define_delimitador(entrada.dado) ) 
+		if ( armazena_delimitador(entrada)) 
+			ASSERT_TRUE( delimitador_incorreto(entrada) );
 }
 
 /// Verifica se é invalido quando entrada não termina em '\n'
@@ -35,11 +41,11 @@ TEST (TestaStringSoma_Necessario, TerminaComBarraN) {
 }
 
 
-/**** Teste que não passa, não implementado 
-
-Aceita entradas inválidas de numeros e letras misturadas
-
-*/
+/*** Teste que não passa, não implementado
+*
+* Aceita entradas inválidas de numeros e letras misturadas
+*
+***/
 
 TEST (TestaStringSoma, ApenasNumeros) {
 	char * entrada;

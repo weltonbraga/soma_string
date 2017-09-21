@@ -58,7 +58,7 @@ bool ausencia_barra_n_final (string s){
 	DEBUG_PRINT( "\n	###### fun ausencia_barra_n_final \n" );
     int contador = 0;
     std::smatch m;
-    std::regex e ("\\n$");   // matches 
+    std::regex e ("^\\d+|\\n$");   // matches 
     
     DEBUG_PRINT( "Target sequence: " << s );
     DEBUG_PRINT( "Regular expression: /\\n$/" );
@@ -84,6 +84,30 @@ bool tem_espacos_em_branco(string s){
     int contador = 0;
     std::smatch m;
     std::regex e ("[ ]+");   // matches espacos em branco
+    
+   // std::cout << "Target sequence: " << s << std::endl;
+    DEBUG_PRINT( "Regular expression: /\\n$/" );
+    DEBUG_PRINT( "The following matches and submatches were found:" );
+    
+    while (std::regex_search (s,m,e)) {
+        for (auto x:m) {
+            contador++;
+           //DEBUG_PRINT( x );
+        }
+       // std::cout << std::endl;
+        s = m.suffix().str();
+    }
+	if (contador > 0 )
+        return true;
+    return false;
+}
+
+//^(\\n)*(,)(\\n)*|(\\n)*(,)(\\n)*$
+
+bool tem_delimitador_no_inicio_fim(string s){
+    int contador = 0;
+    std::smatch m;
+    std::regex e ("^(\\n)*(,)(\\n)*|(\\n)*(,)(\\n)*$");   // matches espacos em branco
     
    // std::cout << "Target sequence: " << s << std::endl;
     DEBUG_PRINT( "Regular expression: /\\n$/" );
@@ -195,6 +219,7 @@ bool armazena_delimitador (t_calc &entrada)
   string s = entrada.dado;
   string buffer;
   bool buffer_ativado = false;
+  int contador = 0;
 	  
  /// elimina delimitadores anteriores
  entrada.v_del.clear();
@@ -221,8 +246,14 @@ bool armazena_delimitador (t_calc &entrada)
         return false;
 	  }
 	}
-
+	/// contador para saber a extensão da declaração do delimitador
+	contador ++;
     }
+	
+	/// apega começo da string até o \\n da declaração do delimitador
+	entrada.dado.erase( 0, contador-1 );
+	cout << " 	>>\n>>		depois de apagado " << s << " FIM" << endl;
+	
   if (buffer_ativado)
     {
 		DEBUG_PRINT( "Nao desligou o buffer" );
@@ -320,20 +351,17 @@ bool delimitador_incorreto(t_calc &entrada){
 	string s = entrada.dado;
 	string buffer;
 	bool buffer_ativado = false;
-	bool travado = true;
+
 	std::locale loc;
 	DEBUG_PRINT( "entrada: " << s );
 	for (auto str = s.begin (); str != s.end (); ++str)
 	{
 		
-		if (!isdigit((*str),loc) && (*str) != '\n' && !travado){
+		if (!isdigit((*str),loc) && (*str) != '\n' ){
 			buffer_ativado = true;
 			DEBUG_PRINT( "b ativado: " << (*str) );
-		} 
-		else if( isdigit((*str),loc) && (*str) != '\n' ){
-			travado = false;
 		}
-		else if (buffer_ativado && isdigit((*str),loc) && !travado)
+		else if (buffer_ativado && (isdigit((*str),loc) || (*str) == '\n') )
 		{
 			buffer_ativado = false;
 			DEBUG_PRINT( "b desativado: " << (*str) );
@@ -350,14 +378,6 @@ bool delimitador_incorreto(t_calc &entrada){
 				return true;
 			}
 		  
-		} else {
-			if( (*str) == '/' ){
-				if((*(str+1)) != '/' ){
-					armazena_delimitador(entrada);
-					//travado = false;
-				}
-			} else if( (*str) == '\n' )
-				travado = false;
 		}
 		
 		if (buffer_ativado){
@@ -394,6 +414,67 @@ int soma_numeros (t_calc &entrada){
 		return INVALIDO;
 	else
 		return soma;
+}
+
+void ler_entrada (const string arquivoEntrada, vector<string> *strings) {
+	cout << "LER" << endl; 
+	string linha;
+	ifstream myfile (arquivoEntrada, std::ios::in); // ifstream = padrão ios:in
+	if (myfile.is_open()) {
+		while ( myfile.good() ) { //enquanto end of file for false continua
+			//getline (myfile,linha); // como foi aberto em modo texto(padrão)
+					 //e não binário(ios::bin) pega cada linha
+			/// apaga \ n final
+			//linha.erase( linha.size()-1 );
+			myfile >> linha;
+			cout << "l  : " << linha << "<" << endl;
+			std::string old("\\n");
+
+			int pos;
+			while ((pos = linha.find(old)) != std::string::npos)
+				linha.replace(pos, old.length(), "\n");
+
+			cout << "de : " << linha << "<" << endl;
+			
+			strings->push_back( linha );
+		}
+		myfile.close();
+		//return true;
+	}else
+		cout << "Unable to open file"; 
+	//return false;
+}
+
+void escrever_saida (const string arquivoSaida, vector<int> *resultado){
+	cout << "ESCREVER" << endl; 
+	 
+	 std::ofstream outfile(arquivoSaida, std::ios::out);
+	  
+	 for (auto numero : *resultado) {
+        outfile << numero << endl;
+    }
+	outfile.close();
+}
+
+void RUN (string e, string s){
+	vector<string> todas_strings;
+	vector<int> todos_resultados;
+	
+	ler_entrada(e, &todas_strings);
+	
+	for (auto str : todas_strings) {
+
+		char * writable = new char[str.size() + 1];
+		std::copy(str.begin(), str.end(), writable);
+		writable[str.size()] = '\0'; // don't forget the terminating 0
+
+		int resposta = soma_string( writable );
+		
+		// don't forget to free the string after finished using it
+		delete[] writable;
+		todos_resultados.push_back( resposta );
+	}
+	escrever_saida (s, &todos_resultados);
 }
 
 #ifdef DEBUG

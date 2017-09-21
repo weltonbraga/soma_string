@@ -5,8 +5,8 @@
  *  \date      20-09-2017
  */
 /// diretivas de compilador
-#ifndef MYLIB
-#define MYLIB
+//#ifndef MYLIB
+//#define MYLIB
 
 #include <iostream>     // std::cout
 #include <fstream>      // std::ifstream
@@ -30,6 +30,8 @@ using std::smatch;
 using std::regex_search;
 using std::stoi;
 using std::to_string;
+
+using std::ifstream;
 
 typedef struct tt_calc {
   int resultado; /// resultado da soma ou INVALIDO
@@ -76,12 +78,18 @@ bool mais_de_3_num_na_linha(t_calc &entrada);
 /// retorna verdadeiro caso o nunero não sejam separados por delimitador mas por '\n'
 bool sem_delimitador_entre_numeros (string);
 
+/// começa ou termina com delimitador
+bool tem_delimitador_no_inicio_fim (string);
+	}
+
 /// [Não implementado] abre e armazena dados do arquivo de entrada
-void ler_entrada(string arquivo_de_entrada);
+void ler_entrada(const string, vector<string> *);
 
 /// [Não implementado] escreve resultado em arquivo de saída
-void escrever_saida(string arquivo_de_saida);
+void escrever_saida(const string, vector<int> *);
+
+void RUN (const string, const string);
 
 
 
-#endif
+//#endif

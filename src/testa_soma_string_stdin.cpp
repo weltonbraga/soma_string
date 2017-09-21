@@ -13,13 +13,16 @@
 	#define DEBUG_PRINT(x) 
 #endif
 
-int main(){
+int main(int argc, char *argv[]){
 
-	char str[] = "1,2\n";
-	char * entrada = str;
-	int r = soma_string(entrada);
-	string saida(str);
-	DEBUG_PRINT( saida + "resultado:" + std::to_string(r));
+	if ( argc < 3 ){
+		cout << "Uso correto: " << argv[0] << "entrada.txt saida.txt" << endl; 
+	} else {
+		const string arqEntrada = argv[1];
+		const string arqSaida = argv[2];
+		
+		RUN (arqEntrada, arqSaida);
+	}
 	return 0;
 }
 
