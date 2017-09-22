@@ -16,11 +16,11 @@
 
 
 int soma_string(char * string_entrada ) {
-	DEBUG_PRINT("\n\n	***		string_soma()\n\n");
+	cout <<"\n\n	***		string_soma()\n\n";
 	t_calc entrada;
 	
 	entrada.dado = string(string_entrada );
-	DEBUG_PRINT( " >>>>>>>>> " << entrada.dado << " <<<<<<<<<<<<<");
+	cout << "\n>>>>>>>> **" << entrada.dado << "** <<<<<<<<<<<<<\n\n";
 	
 	calcula_resultado(entrada);
 	DEBUG_PRINT("\n\n	***		fim string_soma()\n\n");
@@ -28,57 +28,83 @@ int soma_string(char * string_entrada ) {
 }
 
 void calcula_resultado(t_calc &entrada){
-	DEBUG_PRINT("calcula_resultado()");
-	
-	if( ausencia_barra_n_final( entrada.dado ) )
-		entrada.resultado = INVALIDO;
-	else if( tem_espacos_em_branco( entrada.dado ) )
-		entrada.resultado = INVALIDO;
-	else if( tem_numeros_negativos( entrada.dado ) )
-		entrada.resultado = INVALIDO;
-	else if( tem_muitos_delimitadores_entre_numeros( entrada ))
-		entrada.resultado = INVALIDO;
-	else if( define_delimitador(entrada.dado) ) 
+	//cout << "calcula_resultado:";
+	//cout << ": ("<< entrada.dado << ")"<< endl;
+	if( define_delimitador(entrada.dado) ) 
 	{
-		if ( ! armazena_delimitador(entrada)) 
+		if ( ! armazena_delimitador(entrada)) {
+			cout << "6 <=" << endl;
 			entrada.resultado = INVALIDO;
+		}
 	}
-	else if( mais_de_3_num_na_linha(entrada) )
+	
+	if( ausencia_barra_n_final( entrada.dado ) ){
+		cout << "1 <=" << endl;
 		entrada.resultado = INVALIDO;
-	else if( sem_delimitador_entre_numeros(entrada.dado) )
+	}
+	else if( tem_espacos_em_branco( entrada.dado ) ){
+		cout << "2 <=" << endl;
 		entrada.resultado = INVALIDO;
-	else if(delimitador_incorreto(entrada) )
+	}
+	else if( tem_numeros_negativos( entrada.dado ) ){
+		cout << "3 <=" << endl;
 		entrada.resultado = INVALIDO;
-	else
+	}
+	else if( tem_muitos_delimitadores_entre_numeros( entrada )){
+		cout << "4 <=" << endl;
+		entrada.resultado = INVALIDO;
+	}
+	else if(tem_delimitador_no_inicio_fim(entrada.dado) ){
+		cout << "5 <=" << endl;
+		entrada.resultado = INVALIDO;
+	}
+	else if( mais_de_3_num_na_linha(entrada) ){
+		cout << "7 <=" << endl;
+		entrada.resultado = INVALIDO;
+	}
+	else if( sem_delimitador_entre_numeros(entrada.dado) ){
+		cout << "8 <=" << endl;
+		entrada.resultado = INVALIDO;
+	}
+	else if(delimitador_incorreto(entrada) ){
+		cout << "9 <=" << endl;
+		entrada.resultado = INVALIDO;
+	}
+	else{
+		cout << "10 <=" << endl;
 		entrada.resultado = soma_numeros(entrada);	
+	}
 }
 
 
 bool ausencia_barra_n_final (string s){
+	string s_aux(s);
+	
 	DEBUG_PRINT( "\n	###### fun ausencia_barra_n_final \n" );
     int contador = 0;
     std::smatch m;
-    std::regex e ("^\\d+|\\n$");   // matches 
+    std::regex e ("\\n$|\\r$");   // matches 
     
-    DEBUG_PRINT( "Target sequence: " << s );
+    //DEBUG_PRINT( "Target sequence: " << s );
     DEBUG_PRINT( "Regular expression: /\\n$/" );
     
-    
-    while (std::regex_search (s,m,e)) {
+    //cout<< " ausencia_barra_n_final s:("<< s << ")"<< endl;
+    while (std::regex_search (s_aux,m,e)) {
         for (auto x:m) {
             contador++;
            DEBUG_PRINT( x );
         }
        // std::cout << std::endl;
-        s = m.suffix().str();
+        s_aux = m.suffix().str();
     }
-	DEBUG_PRINT( "contador:" << contador );
-	DEBUG_PRINT( "\n	###### FIM FIM  fun ausencia_barra_n_final \n" );
-     if (contador == 0 )
-        return true;
-    return false;
+	
+     if (contador == 0 ){
+		 return true;
+	} else {
+		return false;
+	}
 }
-
+	 
 /// espaços em branco retorna INVALIDO
 bool tem_espacos_em_branco(string s){
     int contador = 0;
@@ -102,12 +128,14 @@ bool tem_espacos_em_branco(string s){
     return false;
 }
 
-//^(\\n)*(,)(\\n)*|(\\n)*(,)(\\n)*$
-
+/*******
+*   /^(\\n)*(,)(\\n)*|(\\n)*(,)(\\n)*$/
+*   para os casos 1,\n e ,2\n retornarem INVALIDO
+********/
 bool tem_delimitador_no_inicio_fim(string s){
     int contador = 0;
     std::smatch m;
-    std::regex e ("^(\\n)*(,)(\\n)*|(\\n)*(,)(\\n)*$");   // matches espacos em branco
+    std::regex e ("^(,)(\\n)*|(\\n)*(,)(\\n)*$");   // matches espacos em branco
     
    // std::cout << "Target sequence: " << s << std::endl;
     DEBUG_PRINT( "Regular expression: /\\n$/" );
@@ -152,28 +180,48 @@ bool tem_numeros_negativos(string s){
 
 bool tem_muitos_delimitadores_entre_numeros (t_calc &entrada){
     //std::cout << "f: tem_muitos_delimitadores_entre_numeros\n";
+	
+	vector<char> scape_regex {'*', '$','^','{','(','|',')','}','.','%'};//, "$", "^", "{", "[", "(", "|", ")", "*", "+", "?", "|"};
+
 	string s_aux ("(");//" (,|;)(\\n)*(,|;)
 	
 	string s_aux2 ("(\\n)*");
 
-	for (auto i : entrada.v_del)
+	for (auto atual_del : entrada.v_del)
 	{
-	  s_aux += i + "|";
+		std::cout << "d:: "<< atual_del << endl;
+		for (auto d :atual_del) {
+			std::vector<char>::iterator it;
+			it = find (scape_regex.begin(), scape_regex.end(), d );
+			if (it != scape_regex.end()){
+				///Elemento encontrado 
+				//std::cout << *it <<"<Achei!!!" << endl;
+				s_aux+= "\\";// + d;
+				//cout << "\\ + d: "<<s_aux << endl;
+			} 
+				//std::cout << d << " vs "<< to_string(d) << endl;
+				s_aux += d;
+				//cout << "  so d: "<<s_aux << endl;
+			
+		}
+		s_aux += "|";
 	}
 	s_aux.pop_back ();
 	
 	s_aux += ")";
 	
+	string a="\%\%\%";
+	
 	s_aux2 = s_aux + s_aux2 + s_aux;
 	
 	
-	//std::cout << s_aux2 << std::endl;
+	//std::cout << "aki: "<< s_aux2 << std::endl;
  
     int contador = 0;
     std::smatch m;
 	std::regex e ( s_aux2 );   // matches delimitador
 	string s = entrada.dado;
-    
+    //std::cout << "aki" << endl;
    // std::cout << "Target sequence: " << s << std::endl;
     DEBUG_PRINT( "Regular expression: /"<< s_aux <<"/" );
     //DEBUG_PRINT( "The following matches and submatches were found:" );
@@ -216,6 +264,7 @@ bool define_delimitador(string s){
 
 bool armazena_delimitador (t_calc &entrada)
 {
+  string s_aux2 = entrada.dado;
   string s = entrada.dado;
   string buffer;
   bool buffer_ativado = false;
@@ -248,11 +297,19 @@ bool armazena_delimitador (t_calc &entrada)
 	}
 	/// contador para saber a extensão da declaração do delimitador
 	contador ++;
+		if ((*str) == '\n'){
+			break;
+		}
     }
-	
+	cout << "conta :" << contador << endl << endl;
+	cout << "s_aux antes: "<< s_aux2 << "<fim" << endl;
 	/// apega começo da string até o \\n da declaração do delimitador
-	entrada.dado.erase( 0, contador-1 );
-	cout << " 	>>\n>>		depois de apagado " << s << " FIM" << endl;
+	int len = s_aux2.size();
+	s_aux2 = s_aux2.substr(  contador-1, (len - (contador-1)) );
+	//entrada.dado.erase( 0, contador-1 );
+	
+	entrada.dado = s_aux2;
+	cout << ">>depois de apagado " << entrada.dado << " FIM" << endl;
 	
   if (buffer_ativado)
     {
@@ -266,7 +323,7 @@ bool armazena_delimitador (t_calc &entrada)
     {
       DEBUG_PRINT( "d: " << i );
     }
-	/**************/
+	/**************
 	string s_aux ("(\\d+(?<todos_delimitadores>");
 
 	for (auto i : entrada.v_del)
@@ -279,23 +336,54 @@ bool armazena_delimitador (t_calc &entrada)
 	
 	DEBUG_PRINT( s_aux );
  
-	/**************/
+	**************/
   return true;
 }
 
+void cria_regex (){
+		string s_aux ("(\\d+(?<todos_delimitadores>");
+	
+}
+
 bool mais_de_3_num_na_linha (t_calc &entrada){
-	//cout << "mais_de_3_num_na_linha\n";
+	cout << "mais_de_3_num_na_linha\n";
+	cout << "ma: "<< entrada.dado << endl;
 	string s_aux ("(\\d+("); // (\d+(?<todos_delimitadores>,)){3,}\d+\\n
 
-	for (auto i : entrada.v_del)
+	
+	//std::cout << s_aux << std::endl;
+	
+	vector<char> scape_regex {'*', '$','^','{','(','|',')','}','.','%'};//, "$", "^", "{", "[", "(", "|", ")", "*", "+", "?", "|"};
+
+	//string s_aux ("(");//" (,|;)(\\n)*(,|;)
+	
+	//string s_aux2 ("(\\n)*");
+
+	for (auto atual_del : entrada.v_del)
 	{
-	  s_aux += i + "|";
+		std::cout << "d:: "<< atual_del << endl;
+		for (auto d :atual_del) {
+			std::vector<char>::iterator it;
+			it = find (scape_regex.begin(), scape_regex.end(), d );
+			if (it != scape_regex.end()){
+				///Elemento encontrado 
+				std::cout << *it <<"<Achei!!!" << endl;
+				s_aux+= "\\";// + d;
+				cout << "\\ + d: "<<s_aux << endl;
+			} 
+				//std::cout << d << " vs "<< to_string(d) << endl;
+				s_aux += d;
+				//cout << "  so d: "<<s_aux << endl;
+			
+		}
+		s_aux += "|";
 	}
 	s_aux.pop_back ();
 	
+
 	s_aux += ")){3,}\\d+\n";
 	
-	//std::cout << s_aux << std::endl;
+	
 	
 	int contador = 0;
     smatch m;
@@ -410,10 +498,7 @@ int soma_numeros (t_calc &entrada){
 		}else if ((*it) <= 1000)
 			soma += (*it);
 	}
-	if(valores.size() < 1 || valores.size() > 3)
-		return INVALIDO;
-	else
-		return soma;
+	return soma;
 }
 
 void ler_entrada (const string arquivoEntrada, vector<string> *strings) {
@@ -422,19 +507,26 @@ void ler_entrada (const string arquivoEntrada, vector<string> *strings) {
 	ifstream myfile (arquivoEntrada, std::ios::in); // ifstream = padrão ios:in
 	if (myfile.is_open()) {
 		while ( myfile.good() ) { //enquanto end of file for false continua
-			//getline (myfile,linha); // como foi aberto em modo texto(padrão)
+			getline (myfile,linha); // como foi aberto em modo texto(padrão)
 					 //e não binário(ios::bin) pega cada linha
 			/// apaga \ n final
 			//linha.erase( linha.size()-1 );
-			myfile >> linha;
-			cout << "l  : " << linha << "<" << endl;
+			//myfile >> linha;
+			//cout << "l  : " << linha << "<" << endl;
+			
 			std::string old("\\n");
 
 			int pos;
 			while ((pos = linha.find(old)) != std::string::npos)
 				linha.replace(pos, old.length(), "\n");
+			
+			std::string old2("\r");
 
-			cout << "de : " << linha << "<" << endl;
+			int pos2;
+			while ((pos2 = linha.find(old2)) != std::string::npos)
+				linha.replace(pos2, old2.length(), "");
+
+			//cout << "de: " << linha << "<" << endl << endl;
 			
 			strings->push_back( linha );
 		}
@@ -463,16 +555,22 @@ void RUN (string e, string s){
 	ler_entrada(e, &todas_strings);
 	
 	for (auto str : todas_strings) {
-
-		char * writable = new char[str.size() + 1];
-		std::copy(str.begin(), str.end(), writable);
-		writable[str.size()] = '\0'; // don't forget the terminating 0
-
-		int resposta = soma_string( writable );
 		
-		// don't forget to free the string after finished using it
-		delete[] writable;
-		todos_resultados.push_back( resposta );
+		if (str != "\n" || str != ""){
+			//cout << " _s inicio: "<< str << "\n _s FIM\n"<< endl;
+			//exit(1);
+			char * writable = new char[str.size() + 1];
+			std::copy(str.begin(), str.end(), writable);
+			writable[str.size()] = '\0'; // don't forget the terminating 0
+
+			int resposta = soma_string( writable );
+			
+			// don't forget to free the string after finished using it
+			delete[] writable;
+			todos_resultados.push_back( resposta );
+		} else {
+				cout << "\n\nerro : " << str << endl;
+		}
 	}
 	escrever_saida (s, &todos_resultados);
 }

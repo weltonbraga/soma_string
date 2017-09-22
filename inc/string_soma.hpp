@@ -37,6 +37,7 @@ typedef struct tt_calc {
   int resultado; /// resultado da soma ou INVALIDO
   string dado; /// string de entrada
   vector<string> v_del{","}; /// vetor de delimitadores
+  regex regex_del;
 }t_calc;
 
 /// retorno para dado de entrada que não satisfaz as especificações
@@ -80,7 +81,7 @@ bool sem_delimitador_entre_numeros (string);
 
 /// começa ou termina com delimitador
 bool tem_delimitador_no_inicio_fim (string);
-	}
+	
 
 /// [Não implementado] abre e armazena dados do arquivo de entrada
 void ler_entrada(const string, vector<string> *);

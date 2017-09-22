@@ -16,7 +16,7 @@
 int main(int argc, char *argv[]){
 
 	if ( argc < 3 ){
-		cout << "Uso correto: " << argv[0] << "entrada.txt saida.txt" << endl; 
+		cout << "Uso correto: " << argv[0] << " entrada.txt saida.txt" << endl; 
 	} else {
 		const string arqEntrada = argv[1];
 		const string arqSaida = argv[2];
