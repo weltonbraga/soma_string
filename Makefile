@@ -39,8 +39,6 @@ $(ODIR)/%.o : $(SDIR)/%.cpp $(DEPS)
 	
 $(EXENAME) : $(OBJS) $(DEPS)
 	$(CXX) -o $@ $^ $(CFLAGS)
-	@echo " ###  check código ### "
-	cppcheck --enable=warning $(SDIR)
 
 test : $(TEXENAME)
 
@@ -49,8 +47,6 @@ $(ODIR)/$(TEXENAME).o : $(TDIR)/$(TEXENAME).cpp $(DEPS)
 
 $(TEXENAME) : $(TOBJS) $(DEPS)
 	$(CXX) -o $@ $^ $(TFLAGS)
-	@echo " ### check testes ### "
-	cppcheck --enable=warning $(TDIR)
 
 .PHONY: clean
 

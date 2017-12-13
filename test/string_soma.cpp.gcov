@@ -1,0 +1,585 @@
+        -:    0:Source:src/string_soma.cpp
+        -:    0:Graph:string_soma.gcno
+        -:    0:Data:string_soma.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:/*! 
+        -:    2: *  \brief     Trabalho 1 - MP
+        -:    3: *  \details   Métodos de Programação - 201600
+        -:    4: *  \author    Welton de Almeida Braga - 16/0148880
+        -:    5: *  \date      20-09-2017
+        -:    6: */
+        -:    7:/// includes
+        -:    8:#include "string_soma.hpp"
+        -:    9:
+        -:   10://#define DEBUG
+        -:   11:#if DEBUG
+        -:   12:	#define DEBUG_PRINT(x) do{cout << x << endl;}while(0);
+        -:   13:#else
+        -:   14:	#define DEBUG_PRINT(x) 
+        -:   15:#endif
+        -:   16:
+        -:   17:
+       14:   18:int soma_string(char * string_entrada ) {
+        -:   19:	//cout <<"\n\n	***		string_soma()\n\n";
+       28:   20:	t_calc entrada;
+        -:   21:	
+       14:   22:	entrada.dado = string(string_entrada );
+        -:   23:	//cout << "\n>>>>>>>> **" << entrada.dado << "** <<<<<<<<<<<<<\n\n";
+        -:   24:	
+       14:   25:	calcula_resultado(entrada);
+        -:   26:	DEBUG_PRINT("\n\n	***		fim string_soma()\n\n");
+       28:   27:	return entrada.resultado;
+        -:   28:}
+        -:   29:
+       14:   30:void calcula_resultado(t_calc &entrada){
+        -:   31:	//cout << "calcula_resultado:";
+        -:   32:	//cout << ": ("<< entrada.dado << ")"<< endl;
+       14:   33:	if( define_delimitador(entrada.dado) ) 
+        -:   34:	{
+    #####:   35:		if ( ! armazena_delimitador(entrada)) {
+        -:   36:			//cout << "6 <=" << endl;
+    #####:   37:			entrada.resultado = INVALIDO;
+        -:   38:		}
+        -:   39:	}
+        -:   40:	
+       14:   41:	if( ausencia_barra_n_final( entrada.dado ) ){
+        -:   42:		//cout << "1 <=" << endl;
+        1:   43:		entrada.resultado = INVALIDO;
+        -:   44:	}
+       13:   45:	else if( tem_espacos_em_branco( entrada.dado ) ){
+        -:   46:		//cout << "2 <=" << endl;
+        3:   47:		entrada.resultado = INVALIDO;
+        -:   48:	}
+       10:   49:	else if( tem_numeros_negativos( entrada.dado ) ){
+        -:   50:		//cout << "3 <=" << endl;
+        2:   51:		entrada.resultado = INVALIDO;
+        -:   52:	}
+        8:   53:	else if( tem_muitos_delimitadores_entre_numeros( entrada )){
+        -:   54:		//cout << "4 <=" << endl;
+    #####:   55:		entrada.resultado = INVALIDO;
+        -:   56:	}
+        8:   57:	else if(tem_delimitador_no_inicio_fim(entrada.dado) ){
+        -:   58:		//cout << "5 <=" << endl;
+        1:   59:		entrada.resultado = INVALIDO;
+        -:   60:	}
+        7:   61:	else if( mais_de_3_num_na_linha(entrada) ){
+        -:   62:		//cout << "7 <=" << endl;
+        1:   63:		entrada.resultado = INVALIDO;
+        -:   64:	}
+        6:   65:	else if( sem_delimitador_entre_numeros(entrada.dado) ){
+        -:   66:		//cout << "8 <=" << endl;
+    #####:   67:		entrada.resultado = INVALIDO;
+        -:   68:	}
+        6:   69:	else if(delimitador_incorreto(entrada) ){
+        -:   70:		//cout << "9 <=" << endl;
+        2:   71:		entrada.resultado = INVALIDO;
+        -:   72:	}
+        -:   73:	else{
+        -:   74:		//cout << "10 <=" << endl;
+        4:   75:		entrada.resultado = soma_numeros(entrada);	
+        -:   76:	}
+       14:   77:}
+        -:   78:
+        -:   79:
+       18:   80:bool ausencia_barra_n_final (string s){
+       36:   81:	string s_aux(s);
+        -:   82:	
+        -:   83:	DEBUG_PRINT( "\n	###### fun ausencia_barra_n_final \n" );
+       18:   84:    int contador = 0;
+       36:   85:    std::smatch m;
+       36:   86:    std::regex e ("\\n$|\\r$");   // matches 
+        -:   87:    
+        -:   88:    //DEBUG_PRINT( "Target sequence: " << s );
+        -:   89:    DEBUG_PRINT( "Regular expression: /\\n$/" );
+        -:   90:    
+        -:   91:    //cout<< " ausencia_barra_n_final s:("<< s << ")"<< endl;
+       48:   92:    while (std::regex_search (s_aux,m,e)) {
+       30:   93:        for (auto x:m) {
+       15:   94:            contador++;
+        -:   95:           DEBUG_PRINT( x );
+        -:   96:        }
+        -:   97:       // std::cout << std::endl;
+       15:   98:        s_aux = m.suffix().str();
+        -:   99:    }
+        -:  100:	
+       18:  101:     if (contador == 0 ){
+        3:  102:		 return true;
+        -:  103:	} else {
+       15:  104:		return false;
+        -:  105:	}
+        -:  106:}
+        -:  107:	 
+        -:  108:/// espaços em branco retorna INVALIDO
+       17:  109:bool tem_espacos_em_branco(string s){
+       17:  110:    int contador = 0;
+       34:  111:    std::smatch m;
+       34:  112:    std::regex e ("[ ]+");   // matches espacos em branco
+        -:  113:    
+        -:  114:   // std::cout << "Target sequence: " << s << std::endl;
+        -:  115:    DEBUG_PRINT( "Regular expression: /\\n$/" );
+        -:  116:    DEBUG_PRINT( "The following matches and submatches were found:" );
+        -:  117:    
+       29:  118:    while (std::regex_search (s,m,e)) {
+       12:  119:        for (auto x:m) {
+        6:  120:            contador++;
+        -:  121:           //DEBUG_PRINT( x );
+        -:  122:        }
+        -:  123:       // std::cout << std::endl;
+        6:  124:        s = m.suffix().str();
+        -:  125:    }
+       17:  126:	if (contador > 0 )
+        5:  127:        return true;
+       12:  128:    return false;
+        -:  129:}
+        -:  130:
+        -:  131:/*******
+        -:  132:*   /^(\\n)*(,)(\\n)*|(\\n)*(,)(\\n)*$/
+        -:  133:*   para os casos 1,\n e ,2\n retornarem INVALIDO
+        -:  134:********/
+        8:  135:bool tem_delimitador_no_inicio_fim(string s){
+        8:  136:    int contador = 0;
+       16:  137:    std::smatch m;
+       16:  138:    std::regex e ("^(,)(\\n)*|(\\n)*(,)(\\n)*$");   // matches espacos em branco
+        -:  139:    
+        -:  140:   // std::cout << "Target sequence: " << s << std::endl;
+        -:  141:    DEBUG_PRINT( "Regular expression: /\\n$/" );
+        -:  142:    DEBUG_PRINT( "The following matches and submatches were found:" );
+        -:  143:    
+       10:  144:    while (std::regex_search (s,m,e)) {
+        7:  145:        for (auto x:m) {
+        6:  146:            contador++;
+        -:  147:           //DEBUG_PRINT( x );
+        -:  148:        }
+        -:  149:       // std::cout << std::endl;
+        1:  150:        s = m.suffix().str();
+        -:  151:    }
+        8:  152:	if (contador > 0 )
+        1:  153:        return true;
+        7:  154:    return false;
+        -:  155:}
+        -:  156:
+       17:  157:bool tem_numeros_negativos(string s){
+       17:  158:	int conta_negativos = 0;
+       34:  159:    std::smatch m;
+       34:  160:    std::regex e ("-\\d+");   // matches numeros negativos
+        -:  161:    
+        -:  162:    //DEBUG_PRINT ("Target sequence: " + s );
+        -:  163:    DEBUG_PRINT ("Regular expression: /-\\d+/" );
+        -:  164:    DEBUG_PRINT ("The following matches and submatches were found:");
+        -:  165:    
+       31:  166:    while (std::regex_search (s,m,e)) {
+       14:  167:        for (auto x:m) {
+        7:  168:            conta_negativos++;
+        -:  169:            DEBUG_PRINT ( x );
+        -:  170:        }
+        -:  171:        //std::cout << std::endl;s
+        7:  172:        s = m.suffix().str();
+        -:  173:    }
+        -:  174:   
+        -:  175:	DEBUG_PRINT("total de negativos: " + to_string(conta_negativos));
+       17:  176:    if (conta_negativos > 0 )
+        6:  177:        return true;
+       11:  178:    return false;
+        -:  179:}
+        -:  180:
+       12:  181:bool tem_muitos_delimitadores_entre_numeros (t_calc &entrada){
+        -:  182:    //std::cout << "f: tem_muitos_delimitadores_entre_numeros\n";
+        -:  183:	
+       24:  184:	vector<char> scape_regex {'*', '$','^','{','(','|',')','}','.','%'};//, "$", "^", "{", "[", "(", "|", ")", "*", "+", "?", "|"};
+        -:  185:
+       24:  186:	string s_aux ("(");//" (,|;)(\\n)*(,|;)
+        -:  187:	
+       24:  188:	string s_aux2 ("(\\n)*");
+        -:  189:
+       24:  190:	for (auto atual_del : entrada.v_del)
+        -:  191:	{
+        -:  192:		//std::cout << "d:: "<< atual_del << endl;
+       24:  193:		for (auto d :atual_del) {
+       12:  194:			std::vector<char>::iterator it;
+       12:  195:			it = find (scape_regex.begin(), scape_regex.end(), d );
+       12:  196:			if (it != scape_regex.end()){
+        -:  197:				///Elemento encontrado 
+        -:  198:				//std::cout << *it <<"<Achei!!!" << endl;
+    #####:  199:				s_aux+= "\\";// + d;
+        -:  200:				//cout << "\\ + d: "<<s_aux << endl;
+        -:  201:			} 
+        -:  202:				//std::cout << d << " vs "<< to_string(d) << endl;
+       12:  203:				s_aux += d;
+        -:  204:				//cout << "  so d: "<<s_aux << endl;
+        -:  205:			
+        -:  206:		}
+       12:  207:		s_aux += "|";
+        -:  208:	}
+       12:  209:	s_aux.pop_back ();
+        -:  210:	
+       12:  211:	s_aux += ")";
+        -:  212:	
+       24:  213:	string a="\%\%\%";
+        -:  214:	
+       12:  215:	s_aux2 = s_aux + s_aux2 + s_aux;
+        -:  216:	
+        -:  217:	
+        -:  218:	//std::cout << "aki: "<< s_aux2 << std::endl;
+        -:  219: 
+       12:  220:    int contador = 0;
+       24:  221:    std::smatch m;
+       24:  222:	std::regex e ( s_aux2 );   // matches delimitador
+       24:  223:	string s = entrada.dado;
+        -:  224:    //std::cout << "aki" << endl;
+        -:  225:   // std::cout << "Target sequence: " << s << std::endl;
+        -:  226:    DEBUG_PRINT( "Regular expression: /"<< s_aux <<"/" );
+        -:  227:    //DEBUG_PRINT( "The following matches and submatches were found:" );
+        -:  228:    
+       16:  229:    while (std::regex_search (s,m,e)) {
+       10:  230:        for (auto x:m) {
+        8:  231:            contador++;
+        -:  232:           DEBUG_PRINT( x );
+        -:  233:        }
+        -:  234:       // std::cout << std::endl;
+        2:  235:        s = m.suffix().str();
+        -:  236:    }
+       12:  237:     if (contador > 0 )
+        2:  238:        return true;
+       10:  239:    return false;
+        -:  240:}
+       19:  241:bool define_delimitador(string s){
+       19:  242:    int contador = 0;
+       38:  243:    std::smatch m;
+       38:  244:    std::regex e ("^/{2}");   // matches  '//' no inicio da string 
+        -:  245:    
+        -:  246:   // std::cout << "Target sequence: " << s << std::endl;
+        -:  247:    DEBUG_PRINT( "Regular expression: /\\n$/" );
+        -:  248:    DEBUG_PRINT( "The following matches and submatches were found:" );
+        -:  249:    
+       25:  250:    while (std::regex_search (s,m,e)) {
+        6:  251:        for (auto x:m) {
+        3:  252:            contador++;
+        -:  253:           //DEBUG_PRINT( x );
+        -:  254:        }
+        -:  255:       // std::cout << std::endl;
+        3:  256:        s = m.suffix().str();
+        -:  257:    }
+       19:  258:	if (contador == 1 ){
+        -:  259:		//armazena_delimitador(entrada);
+        3:  260:        return true;
+        -:  261:	}
+       16:  262:    return false;
+        -:  263:}
+        -:  264:
+        7:  265:bool armazena_delimitador (t_calc &entrada)
+        -:  266:{
+       14:  267:  string s_aux2 = entrada.dado;
+       14:  268:  string s = entrada.dado;
+       14:  269:  string buffer;
+        7:  270:  bool buffer_ativado = false;
+        7:  271:  int contador = 0;
+        -:  272:	  
+        -:  273: /// elimina delimitadores anteriores
+        7:  274: entrada.v_del.clear();
+        -:  275:
+       52:  276:  for (auto str = s.begin (); str != s.end (); ++str)
+        -:  277:    {
+       52:  278:	if (buffer_ativado)
+       19:  279:		buffer += (*str);
+       52:  280:	if ((*str) == '[')
+        7:  281:		buffer_ativado = true;
+       45:  282:      else if ((*str) == ']')
+        -:  283:	{
+        7:  284:	  buffer_ativado = false;
+        7:  285:	  buffer.pop_back ();
+        -:  286:	  /// eveita buffer vazio quando a string for "//[]"
+        7:  287:	  if ( buffer.size() == 0)
+        3:  288:			return false;
+        -:  289:			
+        6:  290:	  entrada.v_del.push_back (buffer);
+        6:  291:	  buffer.clear ();
+        6:  292:	  if ((*(str + 1)) != '[' && (*(str + 1)) != '\n')
+        -:  293:	  {
+        -:  294:        DEBUG_PRINT( (*(str + 1)) << " ao invez de \\n!" );
+        1:  295:        return false;
+        -:  296:	  }
+        -:  297:	}
+        -:  298:	/// contador para saber a extensão da declaração do delimitador
+       50:  299:	contador ++;
+       50:  300:		if ((*str) == '\n'){
+        5:  301:			break;
+        -:  302:		}
+        -:  303:    }
+        -:  304:	//cout << "conta :" << contador << endl << endl;
+        -:  305:	//cout << "s_aux antes: "<< s_aux2 << "<fim" << endl;
+        -:  306:	/// apega começo da string até o \\n da declaração do delimitador
+        5:  307:	int len = s_aux2.size();
+       10:  308:	s_aux2 = s_aux2.substr(  contador-1, (len - (contador-1)) );
+        -:  309:	//entrada.dado.erase( 0, contador-1 );
+        -:  310:	
+        5:  311:	entrada.dado = s_aux2;
+        -:  312:	//cout << ">>depois de apagado " << entrada.dado << " FIM" << endl;
+        -:  313:	
+        5:  314:  if (buffer_ativado)
+        -:  315:    {
+        -:  316:		DEBUG_PRINT( "Nao desligou o buffer" );
+    #####:  317:		return false;
+        5:  318:    } else if (entrada.v_del.size() == 0) {
+        -:  319:        DEBUG_PRINT( "Nada de delimitador" );
+        1:  320:      return false;
+        -:  321:    }
+        4:  322:	for (auto i : entrada.v_del)
+        -:  323:    {
+        -:  324:      DEBUG_PRINT( "d: " << i );
+        -:  325:    }
+        -:  326:	/**************
+        -:  327:	string s_aux ("(\\d+(?<todos_delimitadores>");
+        -:  328:
+        -:  329:	for (auto i : entrada.v_del)
+        -:  330:	{
+        -:  331:	  s_aux += i + "|";
+        -:  332:	}
+        -:  333:	s_aux.pop_back ();
+        -:  334:	
+        -:  335:	s_aux += ")){3,}\\d+\\n";
+        -:  336:	
+        -:  337:	DEBUG_PRINT( s_aux );
+        -:  338: 
+        -:  339:	**************/
+        4:  340:  return true;
+        -:  341:}
+        -:  342:
+    #####:  343:void cria_regex (){
+    #####:  344:		string s_aux ("(\\d+(?<todos_delimitadores>");
+        -:  345:	
+    #####:  346:}
+        -:  347:
+        9:  348:bool mais_de_3_num_na_linha (t_calc &entrada){
+        -:  349:	//cout << "mais_de_3_num_na_linha\n";
+        -:  350:	//cout << "ma: "<< entrada.dado << endl;
+       18:  351:	string s_aux ("(\\d+("); // (\d+(?<todos_delimitadores>,)){3,}\d+\\n
+        -:  352:
+        -:  353:	
+        -:  354:	//std::cout << s_aux << std::endl;
+        -:  355:	
+       18:  356:	vector<char> scape_regex {'*', '$','^','{','(','|',')','}','.','%'};//, "$", "^", "{", "[", "(", "|", ")", "*", "+", "?", "|"};
+        -:  357:
+        -:  358:	//string s_aux ("(");//" (,|;)(\\n)*(,|;)
+        -:  359:	
+        -:  360:	//string s_aux2 ("(\\n)*");
+        -:  361:
+       18:  362:	for (auto atual_del : entrada.v_del)
+        -:  363:	{
+        -:  364:		//std::cout << "d:: "<< atual_del << endl;
+       18:  365:		for (auto d :atual_del) {
+        9:  366:			std::vector<char>::iterator it;
+        9:  367:			it = find (scape_regex.begin(), scape_regex.end(), d );
+        9:  368:			if (it != scape_regex.end()){
+        -:  369:				///Elemento encontrado 
+        -:  370:				//std::cout << *it <<"<Achei!!!" << endl;
+    #####:  371:				s_aux+= "\\";// + d;
+        -:  372:				//cout << "\\ + d: "<<s_aux << endl;
+        -:  373:			} 
+        -:  374:				//std::cout << d << " vs "<< to_string(d) << endl;
+        9:  375:				s_aux += d;
+        -:  376:				//cout << "  so d: "<<s_aux << endl;
+        -:  377:			
+        -:  378:		}
+        9:  379:		s_aux += "|";
+        -:  380:	}
+        9:  381:	s_aux.pop_back ();
+        -:  382:	
+        -:  383:
+        9:  384:	s_aux += ")){3,}\\d+\n";
+        -:  385:	
+        -:  386:	
+        -:  387:	
+        9:  388:	int contador = 0;
+       18:  389:    smatch m;
+        -:  390:	
+        -:  391:	//cout << "aki\n\n";
+        -:  392:	//string s_aux2 ("(\\d+(?<todos_delimitadores>,)){3,}\\d+\\n");
+        -:  393:	//string s_aux2 ("(A candy)?(?(1) is true| is false)");
+        -:  394:	//std::cout << s_aux2 << std::endl;
+       18:  395:    regex e ( s_aux );   // matches  '//' no inicio da string 
+        -:  396:	///cout << "aki\n\n";
+       18:  397:    string s = entrada.dado;
+        -:  398:   // std::cout << "Target sequence: " << s << std::endl;
+        -:  399:    //DEBUG_PRINT( "Regular expression: /\\n$/" );
+        -:  400:   // DEBUG_PRINT( "The following matches and submatches were found:" );
+        -:  401:    
+       13:  402:    while (std::regex_search (s,m,e)) {
+        8:  403:        for (auto x:m) {
+        6:  404:            contador++;
+        -:  405:           //DEBUG_PRINT( x );
+        -:  406:        }
+        -:  407:       // std::cout << std::endl;
+        2:  408:        s = m.suffix().str();
+        -:  409:    }
+        9:  410:	if (contador > 0 )
+        2:  411:        return true;
+        7:  412:    return false;
+        -:  413:}
+        8:  414:bool sem_delimitador_entre_numeros (string s){
+        -:  415:	
+        8:  416:int contador = 0;
+       16:  417:    std::smatch m;
+       16:  418:    std::regex e ("\\d+(\\n)+\\d+");   // matches  '//' no inicio da string 
+        -:  419:    
+        -:  420:   // std::cout << "Target sequence: " << s << std::endl;
+        -:  421:    DEBUG_PRINT( "Regular expression: /\\d+(\\n)+\\d+" );
+        -:  422:    DEBUG_PRINT( "The following matches and submatches were found:" );
+        -:  423:    
+       10:  424:    while (std::regex_search (s,m,e)) {
+        3:  425:        for (auto x:m) {
+        2:  426:            contador++;
+        -:  427:           //DEBUG_PRINT( x );
+        -:  428:        }
+        -:  429:       // std::cout << std::endl;
+        1:  430:        s = m.suffix().str();
+        -:  431:    }
+        8:  432:	if (contador > 0 )
+        1:  433:        return true;
+        7:  434:    return false;
+        -:  435:}
+        -:  436:
+       10:  437:bool delimitador_incorreto(t_calc &entrada){
+        -:  438:	DEBUG_PRINT(" \n\n #### delimitador_incorreto \n");
+       20:  439:	string s = entrada.dado;
+       20:  440:	string buffer;
+       10:  441:	bool buffer_ativado = false;
+        -:  442:
+       20:  443:	std::locale loc;
+        -:  444:	DEBUG_PRINT( "entrada: " << s );
+       63:  445:	for (auto str = s.begin (); str != s.end (); ++str)
+        -:  446:	{
+        -:  447:		
+       56:  448:		if (!isdigit((*str),loc) && (*str) != '\n' ){
+       16:  449:			buffer_ativado = true;
+        -:  450:			DEBUG_PRINT( "b ativado: " << (*str) );
+        -:  451:		}
+       40:  452:		else if (buffer_ativado && (isdigit((*str),loc) || (*str) == '\n') )
+        -:  453:		{
+       12:  454:			buffer_ativado = false;
+        -:  455:			DEBUG_PRINT( "b desativado: " << (*str) );
+       12:  456:			std::vector<string>::iterator it;
+       12:  457:			it = find (entrada.v_del.begin(), entrada.v_del.end(), buffer);
+       12:  458:			if (it != entrada.v_del.end()){
+        -:  459:				DEBUG_PRINT( "Element found in myvector: " << *it );
+        9:  460:				buffer.clear();
+        -:  461:			}else{
+        -:  462:				DEBUG_PRINT("b >" <<buffer <<"< Element not found in myvector" );
+        3:  463:				for (std::vector<string>::iterator i = entrada.v_del.begin(); i != entrada.v_del.end(); ++i)
+        -:  464:					DEBUG_PRINT("v: " <<  *i );
+        -:  465:				DEBUG_PRINT( "len v_del: "<< entrada.v_del.size() <<"fim v_del" );
+        3:  466:				return true;
+        -:  467:			}
+        -:  468:		  
+        -:  469:		}
+        -:  470:		
+       53:  471:		if (buffer_ativado){
+       16:  472:			buffer += (*str);
+        -:  473:			DEBUG_PRINT( "buffer +=" << (*str) );
+        -:  474:		}
+        -:  475:    }
+        -:  476:	DEBUG_PRINT(" ###  delimitador chegou no fim ok");
+        7:  477:	return false;
+        -:  478:}
+        -:  479:
+        4:  480:int soma_numeros (t_calc &entrada){
+        8:  481:	string s = entrada.dado;
+        8:  482:	smatch m;
+        8:  483:	regex e ("-?\\d+");
+        4:  484:	int soma = 0;
+        8:  485:	std::vector <int> valores;
+       20:  486:	while (regex_search (s,m,e)) {
+       16:  487:		for (auto x:m){
+        8:  488:			valores.push_back(stoi(x));
+        -:  489:		}		
+        8:  490:		s = m.suffix().str();
+        -:  491:	}
+        -:  492:		
+       12:  493:	for (std::vector<int>::iterator it=valores.begin();  it != valores.end(); it++){
+        -:  494:		DEBUG_PRINT("			"+ to_string((*it)));
+        8:  495:		if ((*it) < 0){
+    #####:  496:			soma = INVALIDO;
+    #####:  497:			break;
+        8:  498:		}else if ((*it) <= 1000)
+        6:  499:			soma += (*it);
+        -:  500:	}
+        8:  501:	return soma;
+        -:  502:}
+        -:  503:
+    #####:  504:void ler_entrada (const string arquivoEntrada, vector<string> *strings) {
+        -:  505:	//cout << "LER" << endl; 
+    #####:  506:	string linha;
+    #####:  507:	ifstream myfile (arquivoEntrada, std::ios::in); // ifstream = padrão ios:in
+    #####:  508:	if (myfile.is_open()) {
+    #####:  509:		while ( myfile.good() ) { //enquanto end of file for false continua
+    #####:  510:			getline (myfile,linha); // como foi aberto em modo texto(padrão)
+        -:  511:					 //e não binário(ios::bin) pega cada linha
+        -:  512:			/// apaga \ n final
+        -:  513:			//linha.erase( linha.size()-1 );
+        -:  514:			//myfile >> linha;
+        -:  515:			//cout << "l  : " << linha << "<" << endl;
+        -:  516:			
+    #####:  517:			std::string old("\\n");
+        -:  518:
+        -:  519:			int pos;
+    #####:  520:			while ((pos = linha.find(old)) != std::string::npos)
+    #####:  521:				linha.replace(pos, old.length(), "\n");
+        -:  522:			
+    #####:  523:			std::string old2("\r");
+        -:  524:
+        -:  525:			int pos2;
+    #####:  526:			while ((pos2 = linha.find(old2)) != std::string::npos)
+    #####:  527:				linha.replace(pos2, old2.length(), "");
+        -:  528:
+        -:  529:			//cout << "de: " << linha << "<" << endl << endl;
+        -:  530:			
+    #####:  531:			strings->push_back( linha );
+        -:  532:		}
+    #####:  533:		myfile.close();
+        -:  534:		//return true;
+        -:  535:	}else
+    #####:  536:		cout << "Unable to open file"; 
+        -:  537:	//return false;
+    #####:  538:}
+        -:  539:
+    #####:  540:void escrever_saida (const string arquivoSaida, vector<int> *resultado){
+        -:  541:	//cout << "ESCREVER" << endl; 
+        -:  542:	 
+    #####:  543:	 std::ofstream outfile(arquivoSaida, std::ios::out);
+        -:  544:	  
+    #####:  545:	 for (auto numero : *resultado) {
+    #####:  546:        outfile << numero << endl;
+        -:  547:    }
+    #####:  548:	outfile.close();
+    #####:  549:}
+        -:  550:
+    #####:  551:void RUN (string e, string s){
+    #####:  552:	vector<string> todas_strings;
+    #####:  553:	vector<int> todos_resultados;
+        -:  554:	
+    #####:  555:	ler_entrada(e, &todas_strings);
+        -:  556:	
+    #####:  557:	for (auto str : todas_strings) {
+        -:  558:		
+    #####:  559:		if (str != "\n" || str != ""){
+        -:  560:			//cout << " _s inicio: "<< str << "\n _s FIM\n"<< endl;
+        -:  561:			//exit(1);
+    #####:  562:			char * writable = new char[str.size() + 1];
+    #####:  563:			std::copy(str.begin(), str.end(), writable);
+    #####:  564:			writable[str.size()] = '\0'; // don't forget the terminating 0
+        -:  565:
+    #####:  566:			int resposta = soma_string( writable );
+        -:  567:			
+        -:  568:			// don't forget to free the string after finished using it
+    #####:  569:			delete[] writable;
+    #####:  570:			todos_resultados.push_back( resposta );
+        -:  571:		} else {
+    #####:  572:				cout << "\n\nerro : " << str << endl;
+        -:  573:		}
+        -:  574:	}
+    #####:  575:	escrever_saida (s, &todos_resultados);
+        3:  576:}
+        -:  577:
+        -:  578:#ifdef DEBUG
+        -:  579:#undef DEBUG
+        -:  580:#endif // DEBUG
